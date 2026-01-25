@@ -1,4 +1,4 @@
-package com.example.checken_road
+package com.chicken.recehhb
 
 import io.flutter.embedding.android.FlutterActivity
 
