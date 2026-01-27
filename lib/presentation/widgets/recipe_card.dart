@@ -173,14 +173,36 @@ class RecipeCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   
-                  // Description
-                  Text(
-                    recipe.description,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: colorScheme.onSurfaceVariant,
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                  // Time and difficulty row
+                  Row(
+                    children: [
+                      Icon(
+                        Icons.schedule,
+                        size: 14,
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        '${recipe.totalTime} min',
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Icon(
+                        Icons.local_fire_department,
+                        size: 14,
+                        color: _getDifficultyColor(recipe.difficulty),
+                      ),
+                      const SizedBox(width: 2),
+                      Text(
+                        recipe.difficulty.displayName,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: _getDifficultyColor(recipe.difficulty),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -201,6 +223,18 @@ class RecipeCard extends StatelessWidget {
       case RecipeCategory.snacks:
         return Colors.orange;
       case RecipeCategory.spicy:
+        return Colors.red;
+    }
+  }
+
+  /// Returns a color based on the recipe difficulty.
+  Color _getDifficultyColor(RecipeDifficulty difficulty) {
+    switch (difficulty) {
+      case RecipeDifficulty.easy:
+        return Colors.green;
+      case RecipeDifficulty.medium:
+        return Colors.orange;
+      case RecipeDifficulty.hard:
         return Colors.red;
     }
   }

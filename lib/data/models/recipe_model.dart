@@ -26,6 +26,11 @@ class RecipeModel extends Recipe {
     required super.ingredients,
     required super.steps,
     super.isFavorite,
+    super.prepTime,
+    super.cookTime,
+    super.servings,
+    super.difficulty,
+    super.nutritionalInfo,
   });
 
   /// Creates a RecipeModel from a JSON map.
@@ -46,6 +51,28 @@ class RecipeModel extends Recipe {
       ingredients: List<String>.from(json['ingredients'] as List),
       steps: List<String>.from(json['steps'] as List),
       isFavorite: json['isFavorite'] as bool? ?? false,
+      prepTime: json['prepTime'] as int? ?? 15,
+      cookTime: json['cookTime'] as int? ?? 30,
+      servings: json['servings'] as int? ?? 4,
+      difficulty: RecipeDifficulty.values.firstWhere(
+        (e) => e.name == json['difficulty'],
+        orElse: () => RecipeDifficulty.medium,
+      ),
+      nutritionalInfo: json['nutritionalInfo'] != null
+          ? NutritionalInfo(
+              calories: json['nutritionalInfo']['calories'] as int? ?? 350,
+              protein: json['nutritionalInfo']['protein'] as int? ?? 25,
+              carbs: json['nutritionalInfo']['carbs'] as int? ?? 20,
+              fat: json['nutritionalInfo']['fat'] as int? ?? 15,
+              fiber: json['nutritionalInfo']['fiber'] as int? ?? 2,
+            )
+          : const NutritionalInfo(
+              calories: 350,
+              protein: 25,
+              carbs: 20,
+              fat: 15,
+              fiber: 2,
+            ),
     );
   }
 
@@ -64,6 +91,17 @@ class RecipeModel extends Recipe {
       'ingredients': ingredients,
       'steps': steps,
       'isFavorite': isFavorite,
+      'prepTime': prepTime,
+      'cookTime': cookTime,
+      'servings': servings,
+      'difficulty': difficulty.name,
+      'nutritionalInfo': {
+        'calories': nutritionalInfo.calories,
+        'protein': nutritionalInfo.protein,
+        'carbs': nutritionalInfo.carbs,
+        'fat': nutritionalInfo.fat,
+        'fiber': nutritionalInfo.fiber,
+      },
     };
   }
 
@@ -81,6 +119,11 @@ class RecipeModel extends Recipe {
       ingredients: recipe.ingredients,
       steps: recipe.steps,
       isFavorite: recipe.isFavorite,
+      prepTime: recipe.prepTime,
+      cookTime: recipe.cookTime,
+      servings: recipe.servings,
+      difficulty: recipe.difficulty,
+      nutritionalInfo: recipe.nutritionalInfo,
     );
   }
 
@@ -98,10 +141,15 @@ class RecipeModel extends Recipe {
       ingredients: ingredients,
       steps: steps,
       isFavorite: isFavorite,
+      prepTime: prepTime,
+      cookTime: cookTime,
+      servings: servings,
+      difficulty: difficulty,
+      nutritionalInfo: nutritionalInfo,
     );
   }
 
-  /// Creates a copy with updated favorite status.
+  /// Creates a copy with updated fields.
   @override
   RecipeModel copyWith({
     String? id,
@@ -112,6 +160,11 @@ class RecipeModel extends Recipe {
     List<String>? ingredients,
     List<String>? steps,
     bool? isFavorite,
+    int? prepTime,
+    int? cookTime,
+    int? servings,
+    RecipeDifficulty? difficulty,
+    NutritionalInfo? nutritionalInfo,
   }) {
     return RecipeModel(
       id: id ?? this.id,
@@ -122,6 +175,11 @@ class RecipeModel extends Recipe {
       ingredients: ingredients ?? this.ingredients,
       steps: steps ?? this.steps,
       isFavorite: isFavorite ?? this.isFavorite,
+      prepTime: prepTime ?? this.prepTime,
+      cookTime: cookTime ?? this.cookTime,
+      servings: servings ?? this.servings,
+      difficulty: difficulty ?? this.difficulty,
+      nutritionalInfo: nutritionalInfo ?? this.nutritionalInfo,
     );
   }
 }

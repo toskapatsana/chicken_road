@@ -1,48 +1,262 @@
-# Miscellaneous
-*.class
+####################################
+# ZERO-TRACE POLICY .gitignore
+# Репозиторий содержит ТОЛЬКО исходники
+# и детерминированные конфиги
+####################################
+
+####################################
+# Global deny: logs / dumps / traces
+####################################
 *.log
-*.pyc
+*.logs
+*.trace
+*.traces
+*.stackdump
+*.dmp
+*.dump
+*.crash
+*.ips
+*.diag
+*.bak
+*.tmp
+*.temp
 *.swp
+*.swo
+*.lock
+*.pid
+*.orig
+*.rej
+
+####################################
+# OS / System
+####################################
 .DS_Store
-.atom/
-.build/
-.buildlog/
-.history
-.svn/
-.swiftpm/
-migrate_working_dir/
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100/
+.Trashes/
+.fseventsd/
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.lnk
 
-# IntelliJ related
-*.iml
-*.ipr
-*.iws
-.idea/
+####################################
+# Environment / Secrets (CRITICAL)
+####################################
+.env
+.env.*
+*.env
+*.secret
+*.secrets
+*.token
+*.tokens
+*.password
+*.passwords
+*.key
+*.keys
+*.pem
+*.p8
+*.p12
+*.cer
+*.crt
+*.der
+*.mobileprovision
+*.jks
+*.keystore
+/secrets/
+/secret/
+/.secrets/
+google-services.json
+GoogleService-Info.plist
+firebase.json
+service-account*.json
+**/service-account*.json
+**/credentials*.json
+**/auth*.json
+key.properties
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
-#.vscode/
-
-# Flutter/Dart/Pub related
-**/doc/api/
-**/ios/Flutter/.last_build_id
+####################################
+# Flutter / Dart
+####################################
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
-.pub-cache/
 .pub/
+.pub-cache/
+build/
 /build/
+**/build/
+coverage/
+**/doc/api/
+**/.last_build_id
+**/.packages
+.packages
+.metadata
+pubspec.lock
 
-# Symbolication related
-app.*.symbols
-
-# Obfuscation related
-app.*.map.json
-
-# Android Studio will place build artifacts here
-/android/app/debug
-/android/app/profile
-/android/app/release
-
-# FVM Version Cache
+####################################
+# FVM (Flutter Version Management)
+####################################
 .fvm/
+.fvm/versions/
+.fvm/flutter_sdk
+
+####################################
+# Android / Gradle
+####################################
+android/local.properties
+**/local.properties
+android/.gradle/
+**/.gradle/
+**/.cxx/
+**/.externalNativeBuild/
+**/captures/
+**/*.apk
+**/*.aab
+**/*.aar
+**/mapping.txt
+**/outputs/
+**/intermediates/
+**/generated/
+**/lint-results*.xml
+**/lint*.html
+**/profile-installer.log
+**/app/build/
+**/buildSrc/.gradle/
+android/gradlew
+android/gradlew.bat
+**/gradle-wrapper.jar
+**/GeneratedPluginRegistrant.java
+
+####################################
+# iOS / Xcode / CocoaPods
+####################################
+ios/Pods/
+**/Pods/
+**/DerivedData/
+**/xcuserdata/
+**/*.xcuserstate
+**/*.xcuserdatad/
+**/*.dSYM
+**/*.dSYM.zip
+**/*.ipa
+**/*.app
+**/*.appex
+**/*.framework
+**/*.xcarchive
+**/*.xctestrun
+**/*.profdata
+**/*.plist.lock
+**/*.entitlements.lock
+**/*.modulemap
+**/*.swiftmodule
+**/*.swiftdoc
+**/*.swiftinterface
+ios/Flutter/App.framework
+ios/Flutter/Flutter.framework
+ios/Flutter/Flutter.podspec
+ios/Flutter/Generated.xcconfig
+ios/Flutter/ephemeral/
+ios/Flutter/app.flx
+ios/Flutter/app.zip
+ios/Flutter/flutter_assets/
+ios/Flutter/flutter_export_environment.sh
+ios/ServiceDefinitions.json
+ios/Runner/GeneratedPluginRegistrant.*
+ios/.symlinks/
+**/dgph
+*.mode1v3
+*.mode2v3
+*.moved-aside
+*.pbxuser
+*.perspectivev3
+**/*sync/
+.sconsign.dblite
+.tags*
+
+####################################
+# CocoaPods / SwiftPM / Carthage
+####################################
+**/.swiftpm/
+**/.build/
+**/Carthage/
+**/Carthage/Build/
+Podfile.lock
+
+####################################
+# IDE / Editors (NO USER STATE)
+####################################
+.idea/
+**/.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+**/.vscode/
+*.code-workspace
+**/*.code-workspace
+*.sublime-workspace
+*.sublime-project
+**/.project
+**/.classpath
+**/.settings/
+**/.metadata/
+.atom/
+**/.buildlog/
+.history/
+**/.history/
+
+####################################
+# Tooling caches
+####################################
+node_modules/
+.npm/
+.yarn/
+.cache/
+.parcel-cache/
+**/.dartServer/
+**/.flutter-*
+**/.analysis-driver/
+**/.scannerwork/
+**/.firebase/
+**/.gradletasknamecache
+**/.android/
+**/.bundle/
+**/.ruby-version
+**/.ruby-gemset
+**/.vagrant/
+
+####################################
+# CI artifacts (NEVER COMMIT)
+####################################
+artifacts/
+**/artifacts/
+logs/
+**/logs/
+reports/
+**/reports/
+dist/
+**/dist/
+tmp/
+temp/
+**/tmp/
+**/temp/
+
+####################################
+# Symbolication / Obfuscation
+####################################
+app.*.symbols
+app.*.map.json
+**/mapping.txt
+
+####################################
+# Test / Coverage
+####################################
+coverage/
+**/coverage/
+.test_coverage/
+**/.test_coverage/
+lcov.info
+**/lcov.info

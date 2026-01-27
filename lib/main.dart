@@ -8,11 +8,12 @@
 /// - Presentation Layer: UI (screens, widgets) and state management (Provider)
 /// 
 /// State Management: Provider with ChangeNotifier
-/// - RecipeProvider manages all recipe-related state
-/// - Uses ChangeNotifierProvider for reactive UI updates
+/// - RecipeProvider manages recipe-related state
+/// - SettingsProvider manages app settings
+/// - UserDataProvider manages user-specific recipe data
+/// - ShoppingProvider manages shopping list
 /// 
 /// Theme: Follows system theme (light/dark)
-/// - Uses ThemeMode.system to automatically adapt to device settings
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,10 +30,16 @@ import 'data/datasources/local_recipe_datasource.dart';
 import 'data/datasources/local_storage_datasource.dart';
 import 'data/repositories/recipe_repository_impl.dart';
 
-// Presentation layer - provider and screens
+// Presentation layer - providers and screens
 import 'presentation/providers/recipe_provider.dart';
+import 'presentation/providers/settings_provider.dart';
+import 'presentation/providers/user_data_provider.dart';
+import 'presentation/providers/shopping_provider.dart';
 import 'presentation/screens/home_screen.dart';
 import 'presentation/screens/favorites_screen.dart';
+import 'presentation/screens/shopping_list_screen.dart';
+import 'presentation/screens/settings_screen.dart';
+import 'presentation/screens/onboarding_screen.dart';
 
 void main() {
   runApp(const CheckenRoadApp());
@@ -54,15 +61,12 @@ class CheckenRoadApp extends StatelessWidget {
     final localStorageDataSource = LocalStorageDataSource();
 
     // Initialize repository with data sources
-    // This is dependency injection - the repository doesn't know
-    // about concrete data source implementations
     final recipeRepository = RecipeRepositoryImpl(
       recipeDataSource: localRecipeDataSource,
       storageDataSource: localStorageDataSource,
     );
 
     // Initialize use cases with repository
-    // Use cases depend on the repository interface, not implementation
     final getRecipes = GetRecipes(recipeRepository);
     final searchRecipes = SearchRecipes(recipeRepository);
     final filterByCategory = FilterByCategory(recipeRepository);
@@ -71,7 +75,7 @@ class CheckenRoadApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        // Provide RecipeProvider to the entire app
+        // Recipe provider
         ChangeNotifierProvider(
           create: (_) => RecipeProvider(
             getRecipes: getRecipes,
@@ -81,13 +85,24 @@ class CheckenRoadApp extends StatelessWidget {
             getFavorites: getFavorites,
           ),
         ),
+        // Settings provider
+        ChangeNotifierProvider(
+          create: (_) => SettingsProvider()..loadSettings(),
+        ),
+        // User data provider
+        ChangeNotifierProvider(
+          create: (_) => UserDataProvider()..loadAllUserData(),
+        ),
+        // Shopping provider
+        ChangeNotifierProvider(
+          create: (_) => ShoppingProvider()..loadShoppingList(),
+        ),
       ],
       child: MaterialApp(
         title: 'Checken Road',
         debugShowCheckedModeBanner: false,
         
         // Theme configuration
-        // The app follows the system theme (light/dark) automatically
         themeMode: ThemeMode.system,
         
         // Light theme
@@ -140,17 +155,49 @@ class CheckenRoadApp extends StatelessWidget {
           ),
         ),
         
-        home: const MainNavigation(),
+        home: const AppEntryPoint(),
       ),
+    );
+  }
+}
+
+/// Entry point that checks if onboarding should be shown.
+class AppEntryPoint extends StatelessWidget {
+  const AppEntryPoint({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Consumer<SettingsProvider>(
+      builder: (context, settingsProvider, _) {
+        if (settingsProvider.isLoading) {
+          return const Scaffold(
+            body: Center(
+              child: CircularProgressIndicator(),
+            ),
+          );
+        }
+        
+        if (!settingsProvider.settings.hasCompletedOnboarding) {
+          return OnboardingScreen(
+            onComplete: () {
+              settingsProvider.setOnboardingCompleted(true);
+            },
+          );
+        }
+        
+        return const MainNavigation();
+      },
     );
   }
 }
 
 /// Main navigation widget with BottomNavigationBar.
 /// 
-/// Contains two tabs:
+/// Contains four tabs:
 /// - Recipes (Home screen)
 /// - Favorites
+/// - Shopping List
+/// - Settings
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
 
@@ -164,6 +211,8 @@ class _MainNavigationState extends State<MainNavigation> {
   final List<Widget> _screens = const [
     HomeScreen(),
     FavoritesScreen(),
+    ShoppingListScreen(),
+    SettingsScreen(),
   ];
 
   @override
@@ -179,9 +228,11 @@ class _MainNavigationState extends State<MainNavigation> {
           setState(() {
             _currentIndex = index;
           });
-          // Reload favorites when navigating to favorites tab
+          // Reload data when navigating to specific tabs
           if (index == 1) {
             context.read<RecipeProvider>().loadFavorites();
+          } else if (index == 2) {
+            context.read<ShoppingProvider>().loadShoppingList();
           }
         },
         destinations: const [
@@ -194,6 +245,16 @@ class _MainNavigationState extends State<MainNavigation> {
             icon: Icon(Icons.favorite_outline),
             selectedIcon: Icon(Icons.favorite),
             label: 'Favorites',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.shopping_cart_outlined),
+            selectedIcon: Icon(Icons.shopping_cart),
+            label: 'Shopping',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.settings_outlined),
+            selectedIcon: Icon(Icons.settings),
+            label: 'Settings',
           ),
         ],
       ),

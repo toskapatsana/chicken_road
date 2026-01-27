@@ -3,19 +3,33 @@
 /// Displays detailed information about a single recipe:
 /// - Full-size recipe image
 /// - Title and description
-/// - Ingredients list
+/// - Time, difficulty, and servings info
+/// - Servings calculator
+/// - Ingredients list (scaled by servings)
 /// - Step-by-step cooking instructions
-/// - Add/remove from favorites button
+/// - Rating and notes
+/// - Add to shopping list
+/// - Share recipe
+/// - Cook mode button
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../domain/entities/recipe.dart';
 import '../providers/recipe_provider.dart';
+import '../providers/user_data_provider.dart';
+import '../providers/shopping_provider.dart';
+import '../widgets/servings_selector.dart';
+import '../widgets/difficulty_badge.dart';
+import '../widgets/nutritional_info_card.dart';
+import '../widgets/rating_widget.dart';
+import '../widgets/cooking_timer_widget.dart';
+import 'cook_mode_screen.dart';
 
 /// Screen showing detailed recipe information.
 /// 
 /// [recipeId] - The ID of the recipe to display
-class RecipeDetailScreen extends StatelessWidget {
+class RecipeDetailScreen extends StatefulWidget {
   final String recipeId;
 
   const RecipeDetailScreen({
@@ -24,13 +38,133 @@ class RecipeDetailScreen extends StatelessWidget {
   });
 
   @override
+  State<RecipeDetailScreen> createState() => _RecipeDetailScreenState();
+}
+
+class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
+  late int _currentServings;
+  bool _showTimer = false;
+  bool _showNotes = false;
+  final TextEditingController _notesController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Load user data for this recipe
+    Future.microtask(() {
+      final recipe = context.read<RecipeProvider>().getRecipeById(widget.recipeId);
+      if (recipe != null) {
+        _currentServings = recipe.servings;
+        
+        // Check for saved servings
+        final userData = context.read<UserDataProvider>().getUserDataForRecipe(widget.recipeId);
+        if (userData != null) {
+          setState(() {
+            _currentServings = userData.selectedServings;
+            _notesController.text = userData.notes ?? '';
+          });
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  void _shareRecipe(Recipe recipe) {
+    final text = '''
+${recipe.title}
+
+${recipe.description}
+
+Prep Time: ${recipe.prepTime} min
+Cook Time: ${recipe.cookTime} min
+Servings: ${recipe.servings}
+
+INGREDIENTS:
+${recipe.ingredients.map((i) => '• $i').join('\n')}
+
+INSTRUCTIONS:
+${recipe.steps.asMap().entries.map((e) => '${e.key + 1}. ${e.value}').join('\n')}
+
+Shared from Checken Road App
+''';
+    Share.share(text, subject: recipe.title);
+  }
+
+  void _addToShoppingList(BuildContext context, Recipe recipe) {
+    context.read<ShoppingProvider>().addIngredientsFromRecipe(
+      ingredients: recipe.ingredients,
+      recipeId: recipe.id,
+      recipeName: recipe.title,
+    );
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Added ${recipe.ingredients.length} ingredients to shopping list'),
+        action: SnackBarAction(
+          label: 'View',
+          onPressed: () {
+            // Navigate to shopping list - user can switch tabs
+          },
+        ),
+      ),
+    );
+  }
+
+  void _openCookMode(BuildContext context, Recipe recipe) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CookModeScreen(recipe: recipe),
+      ),
+    );
+  }
+
+  String _scaleIngredient(String ingredient, int originalServings, int newServings) {
+    if (originalServings == newServings) return ingredient;
+    
+    final multiplier = newServings / originalServings;
+    
+    // Simple number scaling regex
+    final regex = RegExp(r'^([\d]+(?:\.[\d]+)?(?:\/[\d]+)?)\s*');
+    final match = regex.firstMatch(ingredient);
+    
+    if (match != null) {
+      final numberStr = match.group(1)!;
+      double? number;
+      
+      if (numberStr.contains('/')) {
+        // Handle fractions like 1/2
+        final parts = numberStr.split('/');
+        number = double.parse(parts[0]) / double.parse(parts[1]);
+      } else {
+        number = double.tryParse(numberStr);
+      }
+      
+      if (number != null) {
+        final scaled = number * multiplier;
+        final scaledStr = scaled == scaled.roundToDouble() 
+            ? scaled.round().toString()
+            : scaled.toStringAsFixed(1);
+        return ingredient.replaceFirst(regex, '$scaledStr ');
+      }
+    }
+    
+    return ingredient;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     
-    return Consumer<RecipeProvider>(
-      builder: (context, provider, _) {
-        final recipe = provider.getRecipeById(recipeId);
+    return Consumer2<RecipeProvider, UserDataProvider>(
+      builder: (context, recipeProvider, userDataProvider, _) {
+        final recipe = recipeProvider.getRecipeById(widget.recipeId);
         
         if (recipe == null) {
           return Scaffold(
@@ -40,6 +174,8 @@ class RecipeDetailScreen extends StatelessWidget {
             ),
           );
         }
+        
+        final userData = userDataProvider.getUserDataForRecipe(widget.recipeId);
         
         return Scaffold(
           body: CustomScrollView(
@@ -98,7 +234,19 @@ class RecipeDetailScreen extends StatelessWidget {
                   ),
                 ),
                 actions: [
-                  // Favorite button in app bar
+                  // Share button
+                  Container(
+                    margin: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.black.withOpacity(0.3),
+                      shape: BoxShape.circle,
+                    ),
+                    child: IconButton(
+                      icon: const Icon(Icons.share, color: Colors.white),
+                      onPressed: () => _shareRecipe(recipe),
+                    ),
+                  ),
+                  // Favorite button
                   Container(
                     margin: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
@@ -112,7 +260,7 @@ class RecipeDetailScreen extends StatelessWidget {
                             : Icons.favorite_border,
                         color: recipe.isFavorite ? Colors.red : Colors.white,
                       ),
-                      onPressed: () => provider.toggleFavorite(recipeId),
+                      onPressed: () => recipeProvider.toggleFavorite(widget.recipeId),
                     ),
                   ),
                 ],
@@ -125,24 +273,30 @@ class RecipeDetailScreen extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Category badge
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
-                          vertical: 6,
-                        ),
-                        decoration: BoxDecoration(
-                          color: _getCategoryColor(recipe.category),
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        child: Text(
-                          recipe.category.displayName,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w600,
+                      // Category and difficulty badges
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: _getCategoryColor(recipe.category),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: Text(
+                              recipe.category.displayName,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 8),
+                          DifficultyBadge(difficulty: recipe.difficulty),
+                        ],
                       ),
                       
                       const SizedBox(height: 12),
@@ -165,14 +319,121 @@ class RecipeDetailScreen extends StatelessWidget {
                         ),
                       ),
                       
+                      const SizedBox(height: 16),
+                      
+                      // Time info row
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            _TimeInfoItem(
+                              icon: Icons.timer_outlined,
+                              label: 'Prep',
+                              value: '${recipe.prepTime} min',
+                            ),
+                            Container(
+                              width: 1,
+                              height: 30,
+                              color: colorScheme.outline.withOpacity(0.3),
+                            ),
+                            _TimeInfoItem(
+                              icon: Icons.local_fire_department_outlined,
+                              label: 'Cook',
+                              value: '${recipe.cookTime} min',
+                            ),
+                            Container(
+                              width: 1,
+                              height: 30,
+                              color: colorScheme.outline.withOpacity(0.3),
+                            ),
+                            _TimeInfoItem(
+                              icon: Icons.schedule,
+                              label: 'Total',
+                              value: '${recipe.totalTime} min',
+                            ),
+                          ],
+                        ),
+                      ),
+                      
+                      const SizedBox(height: 16),
+                      
+                      // User rating and cooking history
+                      if (userData != null && (userData.rating != null || userData.timesMade > 0))
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: RatingDisplay(
+                            rating: userData.rating,
+                            timesCooked: userData.timesMade,
+                          ),
+                        ),
+                      
+                      // Cook Mode button
+                      FilledButton.icon(
+                        onPressed: () => _openCookMode(context, recipe),
+                        icon: const Icon(Icons.restaurant_menu),
+                        label: const Text('Start Cooking'),
+                        style: FilledButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 50),
+                        ),
+                      ),
+                      
+                      const SizedBox(height: 12),
+                      
+                      // Timer toggle
+                      OutlinedButton.icon(
+                        onPressed: () {
+                          setState(() => _showTimer = !_showTimer);
+                        },
+                        icon: Icon(_showTimer ? Icons.timer_off : Icons.timer),
+                        label: Text(_showTimer ? 'Hide Timer' : 'Show Timer'),
+                        style: OutlinedButton.styleFrom(
+                          minimumSize: const Size(double.infinity, 48),
+                        ),
+                      ),
+                      
+                      // Timer widget
+                      if (_showTimer) ...[
+                        const SizedBox(height: 16),
+                        CookingTimerWidget(
+                          initialMinutes: recipe.cookTime,
+                        ),
+                      ],
+                      
+                      const SizedBox(height: 24),
+                      
+                      // Servings selector
+                      ServingsSelector(
+                        servings: _currentServings,
+                        onChanged: (value) {
+                          setState(() => _currentServings = value);
+                          userDataProvider.setSelectedServings(widget.recipeId, value);
+                        },
+                      ),
+                      
                       const SizedBox(height: 24),
                       
                       // Ingredients section
-                      _buildSectionHeader(
-                        context,
-                        icon: Icons.shopping_basket,
-                        title: 'Ingredients',
-                        count: recipe.ingredients.length,
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildSectionHeader(
+                              context,
+                              icon: Icons.shopping_basket,
+                              title: 'Ingredients',
+                              count: recipe.ingredients.length,
+                            ),
+                          ),
+                          TextButton.icon(
+                            onPressed: () => _addToShoppingList(context, recipe),
+                            icon: const Icon(Icons.add_shopping_cart, size: 18),
+                            label: const Text('Add All'),
+                          ),
+                        ],
                       ),
                       
                       const SizedBox(height: 12),
@@ -180,8 +441,7 @@ class RecipeDetailScreen extends StatelessWidget {
                       // Ingredients list
                       Container(
                         decoration: BoxDecoration(
-                          color: colorScheme.surfaceContainerHighest
-                              .withOpacity(0.5),
+                          color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(16),
                         ),
                         child: ListView.separated(
@@ -195,6 +455,11 @@ class RecipeDetailScreen extends StatelessWidget {
                             color: colorScheme.outline.withOpacity(0.2),
                           ),
                           itemBuilder: (context, index) {
+                            final scaledIngredient = _scaleIngredient(
+                              recipe.ingredients[index],
+                              recipe.servings,
+                              _currentServings,
+                            );
                             return ListTile(
                               dense: true,
                               leading: CircleAvatar(
@@ -210,12 +475,21 @@ class RecipeDetailScreen extends StatelessWidget {
                                 ),
                               ),
                               title: Text(
-                                recipe.ingredients[index],
+                                scaledIngredient,
                                 style: theme.textTheme.bodyMedium,
                               ),
                             );
                           },
                         ),
+                      ),
+                      
+                      const SizedBox(height: 24),
+                      
+                      // Nutritional Info
+                      NutritionalInfoCard(
+                        nutritionalInfo: recipe.nutritionalInfo,
+                        originalServings: recipe.servings,
+                        currentServings: _currentServings,
                       ),
                       
                       const SizedBox(height: 24),
@@ -241,7 +515,6 @@ class RecipeDetailScreen extends StatelessWidget {
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                // Step number
                                 Container(
                                   width: 32,
                                   height: 32,
@@ -260,13 +533,11 @@ class RecipeDetailScreen extends StatelessWidget {
                                   ),
                                 ),
                                 const SizedBox(width: 12),
-                                // Step text
                                 Expanded(
                                   child: Container(
                                     padding: const EdgeInsets.all(12),
                                     decoration: BoxDecoration(
-                                      color: colorScheme.surfaceContainerHighest
-                                          .withOpacity(0.5),
+                                      color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
                                       borderRadius: BorderRadius.circular(12),
                                     ),
                                     child: Text(
@@ -281,7 +552,92 @@ class RecipeDetailScreen extends StatelessWidget {
                         },
                       ),
                       
-                      const SizedBox(height: 80), // Space for FAB
+                      const SizedBox(height: 24),
+                      
+                      // Rating section
+                      _buildSectionHeader(
+                        context,
+                        icon: Icons.star,
+                        title: 'Your Rating',
+                        count: 0,
+                      ),
+                      
+                      const SizedBox(height: 12),
+                      
+                      Center(
+                        child: RatingWidget(
+                          rating: userData?.rating,
+                          onRatingChanged: (rating) {
+                            userDataProvider.setRating(widget.recipeId, rating);
+                          },
+                        ),
+                      ),
+                      
+                      const SizedBox(height: 24),
+                      
+                      // Notes section
+                      Row(
+                        children: [
+                          Expanded(
+                            child: _buildSectionHeader(
+                              context,
+                              icon: Icons.note,
+                              title: 'Notes',
+                              count: 0,
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(_showNotes ? Icons.expand_less : Icons.expand_more),
+                            onPressed: () {
+                              setState(() => _showNotes = !_showNotes);
+                            },
+                          ),
+                        ],
+                      ),
+                      
+                      if (_showNotes) ...[
+                        const SizedBox(height: 12),
+                        TextField(
+                          controller: _notesController,
+                          maxLines: 4,
+                          decoration: InputDecoration(
+                            hintText: 'Add your personal notes here...',
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                          onChanged: (value) {
+                            userDataProvider.setNotes(widget.recipeId, value);
+                          },
+                        ),
+                      ],
+                      
+                      if (userData?.notes != null && userData!.notes!.isNotEmpty && !_showNotes) ...[
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.note, size: 16, color: colorScheme.onSurfaceVariant),
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: Text(
+                                  userData.notes!,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(color: colorScheme.onSurfaceVariant),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                      
+                      const SizedBox(height: 100), // Space for FAB
                     ],
                   ),
                 ),
@@ -289,9 +645,9 @@ class RecipeDetailScreen extends StatelessWidget {
             ],
           ),
           
-          // Floating favorite button
+          // Floating action button
           floatingActionButton: FloatingActionButton.extended(
-            onPressed: () => provider.toggleFavorite(recipeId),
+            onPressed: () => recipeProvider.toggleFavorite(widget.recipeId),
             backgroundColor: recipe.isFavorite
                 ? Colors.red
                 : colorScheme.primaryContainer,
@@ -302,7 +658,7 @@ class RecipeDetailScreen extends StatelessWidget {
                   : colorScheme.onPrimaryContainer,
             ),
             label: Text(
-              recipe.isFavorite ? 'Remove from Favorites' : 'Add to Favorites',
+              recipe.isFavorite ? 'Favorited' : 'Add to Favorites',
               style: TextStyle(
                 color: recipe.isFavorite
                     ? Colors.white
@@ -317,7 +673,6 @@ class RecipeDetailScreen extends StatelessWidget {
     );
   }
 
-  /// Builds a section header with icon, title, and count.
   Widget _buildSectionHeader(
     BuildContext context, {
     required IconData icon,
@@ -329,10 +684,7 @@ class RecipeDetailScreen extends StatelessWidget {
     
     return Row(
       children: [
-        Icon(
-          icon,
-          color: colorScheme.primary,
-        ),
+        Icon(icon, color: colorScheme.primary),
         const SizedBox(width: 8),
         Text(
           title,
@@ -340,27 +692,28 @@ class RecipeDetailScreen extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
-        const Spacer(),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-          decoration: BoxDecoration(
-            color: colorScheme.primaryContainer,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(
-            '$count items',
-            style: TextStyle(
-              fontSize: 12,
-              color: colorScheme.onPrimaryContainer,
-              fontWeight: FontWeight.w500,
+        if (count > 0) ...[
+          const Spacer(),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            decoration: BoxDecoration(
+              color: colorScheme.primaryContainer,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Text(
+              '$count items',
+              style: TextStyle(
+                fontSize: 12,
+                color: colorScheme.onPrimaryContainer,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-        ),
+        ],
       ],
     );
   }
 
-  /// Returns a color for each category.
   Color _getCategoryColor(RecipeCategory category) {
     switch (category) {
       case RecipeCategory.soups:
@@ -372,5 +725,41 @@ class RecipeDetailScreen extends StatelessWidget {
       case RecipeCategory.spicy:
         return Colors.red;
     }
+  }
+}
+
+class _TimeInfoItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _TimeInfoItem({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return Column(
+      children: [
+        Icon(icon, size: 20, color: theme.colorScheme.primary),
+        const SizedBox(height: 4),
+        Text(
+          label,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+        Text(
+          value,
+          style: theme.textTheme.titleSmall?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -1,14 +1,58 @@
+# Zero-Trace Policy: Android .gitignore
+
+####################################
+# Gradle
+####################################
+.gradle/
 gradle-wrapper.jar
-/.gradle
-/captures/
-/gradlew
-/gradlew.bat
-/local.properties
+gradlew
+gradlew.bat
+build/
+**/build/
+captures/
+
+####################################
+# Local configuration (NEVER COMMIT)
+####################################
+local.properties
+**/local.properties
+
+####################################
+# Signing keys (CRITICAL)
+####################################
+key.properties
+*.keystore
+*.jks
+*.p12
+*.cer
+*.pem
+/keystore/
+/signing/
+
+####################################
+# Generated files
+####################################
 GeneratedPluginRegistrant.java
 .cxx/
+.externalNativeBuild/
 
-# Remember to never publicly share your keystore.
-# See https://flutter.dev/to/reference-keystore
-key.properties
-**/*.keystore
-**/*.jks
+####################################
+# IDE
+####################################
+*.iml
+.idea/
+
+####################################
+# Logs / Reports
+####################################
+*.log
+lint-results*.xml
+lint*.html
+profile-installer.log
+
+####################################
+# Native builds
+####################################
+**/outputs/
+**/intermediates/
+**/generated/
