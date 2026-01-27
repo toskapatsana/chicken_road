@@ -1,4 +1,4 @@
-/// Checken Road - A Chicken Recipe Mobile Application
+/// Chicken Recipes Hot - A Chicken Recipe Mobile Application
 /// 
 /// This is the main entry point of the application.
 /// 
@@ -45,7 +45,7 @@ void main() {
   runApp(const CheckenRoadApp());
 }
 
-/// The root widget of the Checken Road application.
+/// The root widget of the Chicken Recipes Hot application.
 /// 
 /// This widget sets up:
 /// 1. Dependency injection using Provider
@@ -99,7 +99,7 @@ class CheckenRoadApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'Checken Road',
+        title: 'Chicken Recipes Hot',
         debugShowCheckedModeBanner: false,
         
         // Theme configuration
