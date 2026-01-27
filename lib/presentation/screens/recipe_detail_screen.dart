@@ -42,30 +42,33 @@ class RecipeDetailScreen extends StatefulWidget {
 }
 
 class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
-  late int _currentServings;
+  int _currentServings = 4; // Default value
   bool _showTimer = false;
   bool _showNotes = false;
+  bool _isInitialized = false;
   final TextEditingController _notesController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    // Load user data for this recipe
-    Future.microtask(() {
-      final recipe = context.read<RecipeProvider>().getRecipeById(widget.recipeId);
-      if (recipe != null) {
-        _currentServings = recipe.servings;
-        
-        // Check for saved servings
-        final userData = context.read<UserDataProvider>().getUserDataForRecipe(widget.recipeId);
-        if (userData != null) {
-          setState(() {
-            _currentServings = userData.selectedServings;
-            _notesController.text = userData.notes ?? '';
-          });
-        }
-      }
-    });
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (!_isInitialized) {
+      _initializeData();
+    }
+  }
+
+  void _initializeData() {
+    final recipe = context.read<RecipeProvider>().getRecipeById(widget.recipeId);
+    if (recipe != null) {
+      _currentServings = recipe.servings;
+    }
+    
+    final userData = context.read<UserDataProvider>().getUserDataForRecipe(widget.recipeId);
+    if (userData != null) {
+      _currentServings = userData.selectedServings;
+      _notesController.text = userData.notes ?? '';
+    }
+    
+    _isInitialized = true;
   }
 
   @override
