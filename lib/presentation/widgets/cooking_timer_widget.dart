@@ -4,6 +4,7 @@
 
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 class CookingTimerWidget extends StatefulWidget {
@@ -93,14 +94,24 @@ class _CookingTimerWidgetState extends State<CookingTimerWidget> {
   }
 
   Future<void> _playAlarm() async {
-    // Play system alarm sound using a simple beep
-    await _audioPlayer.setReleaseMode(ReleaseMode.loop);
-    await _audioPlayer.play(
-      AssetSource('sounds/timer_alarm.mp3'),
-      volume: 1.0,
-    ).catchError((_) {
-      // Fallback if no sound file exists - just show visual feedback
-    });
+    // Vibrate to alert user
+    HapticFeedback.vibrate();
+    
+    // Try to play sound, fallback to vibration pattern if unavailable
+    try {
+      await _audioPlayer.setReleaseMode(ReleaseMode.loop);
+      // Use a URL-based sound as fallback since asset might not exist
+      await _audioPlayer.play(
+        UrlSource('https://actions.google.com/sounds/v1/alarms/beep_short.ogg'),
+        volume: 1.0,
+      );
+    } catch (_) {
+      // Sound failed, use repeated vibration
+      for (int i = 0; i < 5; i++) {
+        await Future.delayed(const Duration(milliseconds: 500));
+        HapticFeedback.heavyImpact();
+      }
+    }
   }
 
   void _stopAlarm() {

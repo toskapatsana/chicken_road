@@ -93,7 +93,7 @@ ${recipe.ingredients.map((i) => '• $i').join('\n')}
 INSTRUCTIONS:
 ${recipe.steps.asMap().entries.map((e) => '${e.key + 1}. ${e.value}').join('\n')}
 
-Shared from Checken Road App
+Shared from Chicken Recipes Hot
 ''';
     Share.share(text, subject: recipe.title);
   }

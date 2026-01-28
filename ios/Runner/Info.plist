@@ -2,6 +2,7 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<!-- App Identity -->
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -22,8 +23,18 @@
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2024 Chicken Recipes Hot. All rights reserved.</string>
+	
+	<!-- Device Requirements -->
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>UIRequiresFullScreen</key>
+	<true/>
+	<key>MinimumOSVersion</key>
+	<string>12.0</string>
+	
+	<!-- Launch and UI -->
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
@@ -34,9 +45,45 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleDefault</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	
+	<!-- App Store Compliance: No encryption used -->
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
+	
+	<!-- Network Security: Allows loading recipe images from external servers -->
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsArbitraryLoads</key>
+		<true/>
+	</dict>
+	
+	<!-- URL Schemes: Required for opening Privacy Policy and Terms links -->
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>https</string>
+		<string>http</string>
+	</array>
+	
+	<!-- Background Capabilities: Allows cooking timer alarm in background -->
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>audio</string>
+	</array>
+	
+	<!-- User Permission Descriptions -->
+	<key>NSUserNotificationsUsageDescription</key>
+	<string>Chicken Recipes Hot would like to send you notifications when your cooking timer is complete.</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>Chicken Recipes Hot may use Face ID for quick access to your saved recipes.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Chicken Recipes Hot needs access to save recipe photos to your photo library.</string>
 </dict>
 </plist>

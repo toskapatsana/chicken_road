@@ -22,7 +22,7 @@ class OnboardingScreen extends StatelessWidget {
       pages: [
         // Welcome page
         PageViewModel(
-          title: 'Welcome to Checken Road',
+          title: 'Welcome to Chicken Recipes Hot',
           body: 'Your ultimate chicken recipe companion with 50+ delicious recipes from around the world.',
           image: _buildImage(
             Icons.restaurant_menu,

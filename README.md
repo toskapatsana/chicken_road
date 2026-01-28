@@ -1,4 +1,4 @@
-# Checken Road 🍗
+# Chicken Recipes Hot 🍗🔥
 
 A comprehensive chicken recipe mobile application built with Flutter, featuring 50+ delicious recipes from around the world.
 
