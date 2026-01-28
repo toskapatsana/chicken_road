@@ -5,7 +5,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../../domain/entities/app_settings.dart';
 import '../providers/settings_provider.dart';
 import '../providers/user_data_provider.dart';
@@ -155,25 +154,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const Divider(),
 
                 // About Section
-                _SectionHeader(title: 'About'),
+                const _SectionHeader(title: 'About'),
                 const ListTile(
                   leading: Icon(Icons.info_outline),
                   title: Text('Chicken Recipes Hot'),
                   subtitle: Text('Version 1.0.0 (Build 3)'),
-                ),
-
-                ListTile(
-                  leading: const Icon(Icons.privacy_tip_outlined),
-                  title: const Text('Privacy Policy'),
-                  trailing: const Icon(Icons.open_in_new, size: 18),
-                  onTap: () => _launchUrl(_privacyPolicyUrl),
-                ),
-
-                ListTile(
-                  leading: const Icon(Icons.description_outlined),
-                  title: const Text('Terms of Service'),
-                  trailing: const Icon(Icons.open_in_new, size: 18),
-                  onTap: () => _launchUrl(_termsOfServiceUrl),
                 ),
 
                 const SizedBox(height: 32),
@@ -341,13 +326,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
         ],
       ),
     );
-  }
-}
-
-Future<void> _launchUrl(String url) async {
-  final uri = Uri.parse(url);
-  if (await canLaunchUrl(uri)) {
-    await launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 }
 

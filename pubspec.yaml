@@ -19,6 +19,7 @@ dependencies:
   audioplayers: ^6.1.0           # Timer sound effects
   introduction_screen: ^3.1.14   # Onboarding screens
   uuid: ^4.5.1                   # Generate unique IDs for shopping items
+  url_launcher: ^6.2.5           # Open URLs for privacy policy and terms
 
 dev_dependencies:
   flutter_test:
