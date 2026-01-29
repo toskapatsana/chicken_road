@@ -1,81 +1,8 @@
 ####################################
-# ZERO-TRACE POLICY .gitignore
-# Репозиторий содержит ТОЛЬКО исходники
-# и детерминированные конфиги
+# Git safety: patch/rewrite leftovers
 ####################################
-
-####################################
-# Global deny: logs / dumps / traces
-####################################
-*.log
-*.logs
-*.trace
-*.traces
-*.stackdump
-*.dmp
-*.dump
-*.crash
-*.ips
-*.diag
-*.bak
-*.tmp
-*.temp
-*.swp
-*.swo
-*.lock
-*.pid
 *.orig
 *.rej
-
-####################################
-# OS / System
-####################################
-.DS_Store
-.AppleDouble
-.LSOverride
-._*
-.Spotlight-V100/
-.Trashes/
-.fseventsd/
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-*.lnk
-
-####################################
-# Environment / Secrets (CRITICAL)
-####################################
-.env
-.env.*
-*.env
-*.secret
-*.secrets
-*.token
-*.tokens
-*.password
-*.passwords
-*.key
-*.keys
-*.pem
-*.p8
-*.p12
-*.cer
-*.crt
-*.der
-*.mobileprovision
-*.jks
-*.keystore
-/secrets/
-/secret/
-/.secrets/
-google-services.json
-GoogleService-Info.plist
-firebase.json
-service-account*.json
-**/service-account*.json
-**/credentials*.json
-**/auth*.json
-key.properties
 
 ####################################
 # Flutter / Dart
@@ -86,22 +13,10 @@ key.properties
 .pub/
 .pub-cache/
 build/
-/build/
-**/build/
 coverage/
 **/doc/api/
 **/.last_build_id
 **/.packages
-.packages
-.metadata
-pubspec.lock
-
-####################################
-# FVM (Flutter Version Management)
-####################################
-.fvm/
-.fvm/versions/
-.fvm/flutter_sdk
 
 ####################################
 # Android / Gradle
@@ -125,20 +40,20 @@ android/.gradle/
 **/profile-installer.log
 **/app/build/
 **/buildSrc/.gradle/
-android/gradlew
-android/gradlew.bat
-**/gradle-wrapper.jar
-**/GeneratedPluginRegistrant.java
 
 ####################################
 # iOS / Xcode / CocoaPods
 ####################################
 ios/Pods/
-**/Pods/
+Pods/
+DerivedData/
 **/DerivedData/
 **/xcuserdata/
 **/*.xcuserstate
 **/*.xcuserdatad/
+**/*.xcodeproj/project.xcworkspace
+**/*.xcworkspace/xcuserdata/
+**/*.xcodeproj/xcuserdata/
 **/*.dSYM
 **/*.dSYM.zip
 **/*.ipa
@@ -154,36 +69,15 @@ ios/Pods/
 **/*.swiftmodule
 **/*.swiftdoc
 **/*.swiftinterface
-ios/Flutter/App.framework
-ios/Flutter/Flutter.framework
-ios/Flutter/Flutter.podspec
-ios/Flutter/Generated.xcconfig
-ios/Flutter/ephemeral/
-ios/Flutter/app.flx
-ios/Flutter/app.zip
-ios/Flutter/flutter_assets/
-ios/Flutter/flutter_export_environment.sh
-ios/ServiceDefinitions.json
-ios/Runner/GeneratedPluginRegistrant.*
-ios/.symlinks/
-**/dgph
-*.mode1v3
-*.mode2v3
-*.moved-aside
-*.pbxuser
-*.perspectivev3
-**/*sync/
-.sconsign.dblite
-.tags*
 
 ####################################
-# CocoaPods / SwiftPM / Carthage
+# CocoaPods / SwiftPM caches
 ####################################
 **/.swiftpm/
 **/.build/
+**/Pods/
 **/Carthage/
 **/Carthage/Build/
-Podfile.lock
 
 ####################################
 # IDE / Editors (NO USER STATE)
@@ -203,10 +97,6 @@ Podfile.lock
 **/.classpath
 **/.settings/
 **/.metadata/
-.atom/
-**/.buildlog/
-.history/
-**/.history/
 
 ####################################
 # Tooling caches
@@ -226,7 +116,6 @@ node_modules/
 **/.bundle/
 **/.ruby-version
 **/.ruby-gemset
-**/.vagrant/
 
 ####################################
 # CI artifacts (NEVER COMMIT)
@@ -243,20 +132,3 @@ tmp/
 temp/
 **/tmp/
 **/temp/
-
-####################################
-# Symbolication / Obfuscation
-####################################
-app.*.symbols
-app.*.map.json
-**/mapping.txt
-
-####################################
-# Test / Coverage
-####################################
-coverage/
-**/coverage/
-.test_coverage/
-**/.test_coverage/
-lcov.info
-**/lcov.info
