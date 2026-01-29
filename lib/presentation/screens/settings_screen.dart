@@ -10,9 +10,6 @@ import '../providers/settings_provider.dart';
 import '../providers/user_data_provider.dart';
 import '../providers/shopping_provider.dart';
 
-const String _privacyPolicyUrl = 'https://toskapatsana.github.io/chicken-recipes-hot/privacy';
-const String _termsOfServiceUrl = 'https://toskapatsana.github.io/chicken-recipes-hot/terms';
-
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
 
