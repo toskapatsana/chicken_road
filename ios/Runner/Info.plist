@@ -65,13 +65,6 @@
 		<true/>
 	</dict>
 	
-	<!-- URL Schemes: Required for opening Privacy Policy and Terms links -->
-	<key>LSApplicationQueriesSchemes</key>
-	<array>
-		<string>https</string>
-		<string>http</string>
-	</array>
-	
 	<!-- Background Capabilities: Allows cooking timer alarm in background -->
 	<key>UIBackgroundModes</key>
 	<array>

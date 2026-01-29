@@ -1,7 +1,7 @@
 name: checken_road
 description: A chicken recipes mobile application with Clean Architecture.
 publish_to: 'none'
-version: 1.0.0+3
+version: 1.0.0+4
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -19,7 +19,6 @@ dependencies:
   audioplayers: ^6.1.0           # Timer sound effects
   introduction_screen: ^3.1.14   # Onboarding screens
   uuid: ^4.5.1                   # Generate unique IDs for shopping items
-  url_launcher: ^6.2.5           # Open URLs for privacy policy and terms
 
 dev_dependencies:
   flutter_test:
