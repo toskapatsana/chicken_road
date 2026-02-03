@@ -42,7 +42,7 @@ import 'presentation/screens/settings_screen.dart';
 import 'presentation/screens/onboarding_screen.dart';
 
 void main() {
-  runApp(const CheckenRoadApp());
+  runApp(const CheckenRecipesHotApp());
 }
 
 /// The root widget of the Chicken Recipes Hot application.
@@ -51,8 +51,8 @@ void main() {
 /// 1. Dependency injection using Provider
 /// 2. App-wide theme configuration
 /// 3. Navigation structure
-class CheckenRoadApp extends StatelessWidget {
-  const CheckenRoadApp({super.key});
+class CheckenRecipesHotApp extends StatelessWidget {
+  const CheckenRecipesHotApp({super.key});
 
   @override
   Widget build(BuildContext context) {

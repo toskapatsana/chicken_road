@@ -1,4 +1,4 @@
-name: checken_road
+name: checken_recipes_hot
 description: A chicken recipes mobile application with Clean Architecture.
 publish_to: 'none'
 version: 1.0.0+4
