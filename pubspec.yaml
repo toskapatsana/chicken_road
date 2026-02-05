@@ -1,5 +1,5 @@
-name: checken_recipes_hot
-description: A chicken recipes mobile application with Clean Architecture.
+name: chicken_recipes_hot
+description: Discover delicious chicken recipes with step-by-step cooking instructions, timers, and shopping lists.
 publish_to: 'none'
 version: 1.0.0+4
 

@@ -1,50 +1,20 @@
-# Zero-Trace Policy: iOS .gitignore
-
-####################################
-# Xcode user data (CRITICAL)
-####################################
-xcuserdata/
-**/xcuserdata/
-*.xcuserstate
-*.xcuserdatad/
-
-####################################
-# Derived data / Build artifacts
-####################################
-DerivedData/
+**/dgph
+*.mode1v3
+*.mode2v3
+*.moved-aside
+*.pbxuser
+*.perspectivev3
+**/*sync/
+.sconsign.dblite
+.tags*
+**/.vagrant/
 **/DerivedData/
-build/
-**/build/
-*.ipa
-*.app
-*.appex
-*.dSYM
-*.dSYM.zip
-*.xcarchive
-*.xctestrun
-
-####################################
-# Signing / Provisioning (CRITICAL)
-####################################
-*.mobileprovision
-*.p8
-*.p12
-*.cer
-*.pem
-/Certificates/
-/Provisioning/
-
-####################################
-# CocoaPods
-####################################
-Pods/
+Icon?
 **/Pods/
-Podfile.lock
-.symlinks/
-
-####################################
-# Generated files
-####################################
+**/.symlinks/
+profile
+xcuserdata
+**/.generated/
 Flutter/App.framework
 Flutter/Flutter.framework
 Flutter/Flutter.podspec
@@ -56,41 +26,8 @@ Flutter/flutter_assets/
 Flutter/flutter_export_environment.sh
 ServiceDefinitions.json
 Runner/GeneratedPluginRegistrant.*
-.generated/
 
-####################################
-# Xcode project leftovers
-####################################
-**/dgph
-*.mode1v3
-*.mode2v3
-*.moved-aside
-*.pbxuser
-*.perspectivev3
-**/*sync/
-.sconsign.dblite
-.tags*
-
-####################################
-# SwiftPM / Carthage
-####################################
-.swiftpm/
-.build/
-Carthage/
-
-####################################
-# Debug / Profile
-####################################
-*.profdata
-profile
-*.plist.lock
-*.entitlements.lock
-
-####################################
-# Other
-####################################
-.vagrant/
-Icon?
+# Exceptions to above rules.
 !default.mode1v3
 !default.mode2v3
 !default.pbxuser
