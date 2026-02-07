@@ -1,7 +1,3 @@
-/// Presentation Layer - Settings Screen
-/// 
-/// App settings including measurement units, cook mode preferences,
-/// timer settings, and data management.
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -39,7 +35,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
             
             return ListView(
               children: [
-                // Header
                 Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
@@ -72,8 +67,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ],
                   ),
                 ),
-
-                // Measurement Units
                 _SectionHeader(title: 'Preferences'),
                 ListTile(
                   leading: const Icon(Icons.straighten),
@@ -82,8 +75,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   trailing: const Icon(Icons.chevron_right),
                   onTap: () => _showMeasurementDialog(context, provider),
                 ),
-
-                // Default Servings
                 ListTile(
                   leading: const Icon(Icons.restaurant),
                   title: const Text('Default Servings'),
@@ -93,8 +84,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
 
                 const Divider(),
-
-                // Cook Mode Section
                 _SectionHeader(title: 'Cook Mode'),
                 ListTile(
                   leading: const Icon(Icons.format_size),
@@ -113,8 +102,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
 
                 const Divider(),
-
-                // Timer Section
                 _SectionHeader(title: 'Timer'),
                 SwitchListTile(
                   secondary: const Icon(Icons.volume_up),
@@ -125,8 +112,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
 
                 const Divider(),
-
-                // Data Management Section
                 _SectionHeader(title: 'Data'),
                 ListTile(
                   leading: Icon(Icons.delete_outline, color: colorScheme.error),
@@ -149,8 +134,6 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 ),
 
                 const Divider(),
-
-                // About Section
                 const _SectionHeader(title: 'About'),
                 const ListTile(
                   leading: Icon(Icons.info_outline),

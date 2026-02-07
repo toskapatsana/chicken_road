@@ -1,15 +1,9 @@
-/// Presentation Layer - Favorites Screen
-/// 
-/// Displays the list of recipes that the user has marked as favorites.
-/// Users can tap a recipe to view details or remove it from favorites.
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/recipe_provider.dart';
 import '../widgets/recipe_card.dart';
 import 'recipe_detail_screen.dart';
-
-/// Screen showing all favorite recipes.
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
 
@@ -21,7 +15,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
   @override
   void initState() {
     super.initState();
-    // Load favorites when screen initializes
     Future.microtask(() {
       context.read<RecipeProvider>().loadFavorites();
     });
@@ -36,7 +29,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -69,8 +61,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 ],
               ),
             ),
-            
-            // Favorites count
             Consumer<RecipeProvider>(
               builder: (context, provider, _) {
                 return Padding(
@@ -86,8 +76,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             ),
             
             const SizedBox(height: 8),
-            
-            // Favorites grid
             Expanded(
               child: Consumer<RecipeProvider>(
                 builder: (context, provider, _) {
@@ -148,7 +136,6 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                               ),
                             ),
                           );
-                          // Reload favorites after returning from detail screen
                           if (mounted) {
                             context.read<RecipeProvider>().loadFavorites();
                           }

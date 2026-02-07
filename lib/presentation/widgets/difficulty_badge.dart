@@ -1,6 +1,3 @@
-/// Presentation Layer - Difficulty Badge Widget
-/// 
-/// A badge that displays the recipe difficulty level with color coding.
 
 import 'package:flutter/material.dart';
 import '../../domain/entities/recipe.dart';

@@ -1,7 +1,3 @@
-/// Domain Layer - Shopping Item Entity
-/// 
-/// Represents an item in the user's shopping list.
-/// Items can be checked off when purchased.
 
 class ShoppingItem {
   final String id;

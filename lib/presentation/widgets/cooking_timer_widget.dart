@@ -1,6 +1,3 @@
-/// Presentation Layer - Cooking Timer Widget
-/// 
-/// A countdown timer widget for cooking with start/pause/reset controls.
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -94,19 +91,14 @@ class _CookingTimerWidgetState extends State<CookingTimerWidget> {
   }
 
   Future<void> _playAlarm() async {
-    // Vibrate to alert user
     HapticFeedback.vibrate();
-    
-    // Try to play sound, fallback to vibration pattern if unavailable
     try {
       await _audioPlayer.setReleaseMode(ReleaseMode.loop);
-      // Use a URL-based sound as fallback since asset might not exist
       await _audioPlayer.play(
-        UrlSource('https://actions.google.com/sounds/v1/alarms/beep_short.ogg'),
+        AssetSource('sounds/timer_alarm.mp3'),
         volume: 1.0,
       );
     } catch (_) {
-      // Sound failed, use repeated vibration
       for (int i = 0; i < 5; i++) {
         await Future.delayed(const Duration(milliseconds: 500));
         HapticFeedback.heavyImpact();
@@ -145,7 +137,6 @@ class _CookingTimerWidgetState extends State<CookingTimerWidget> {
       ),
       child: Column(
         children: [
-          // Timer header
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -166,8 +157,6 @@ class _CookingTimerWidgetState extends State<CookingTimerWidget> {
           ),
           
           const SizedBox(height: 20),
-          
-          // Circular progress with time
           Stack(
             alignment: Alignment.center,
             children: [
@@ -195,12 +184,9 @@ class _CookingTimerWidgetState extends State<CookingTimerWidget> {
           ),
           
           const SizedBox(height: 20),
-          
-          // Control buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Reset button
               _ControlButton(
                 icon: Icons.refresh,
                 label: 'Reset',
@@ -209,8 +195,6 @@ class _CookingTimerWidgetState extends State<CookingTimerWidget> {
               ),
               
               const SizedBox(width: 16),
-              
-              // Play/Pause button
               _ControlButton(
                 icon: _isRunning ? Icons.pause : Icons.play_arrow,
                 label: _isRunning ? 'Pause' : 'Start',
@@ -220,8 +204,6 @@ class _CookingTimerWidgetState extends State<CookingTimerWidget> {
               ),
               
               const SizedBox(width: 16),
-              
-              // +1 min button
               _ControlButton(
                 icon: Icons.add,
                 label: '+1 min',
@@ -304,8 +286,6 @@ class _ControlButton extends StatelessWidget {
     );
   }
 }
-
-/// Compact timer for use in cook mode
 class CompactTimer extends StatefulWidget {
   final int minutes;
   final VoidCallback? onComplete;

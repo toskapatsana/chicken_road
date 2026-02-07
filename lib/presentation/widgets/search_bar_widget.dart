@@ -1,15 +1,5 @@
-/// Presentation Layer - Search Bar Widget
-/// 
-/// A custom search bar widget for filtering recipes by name.
-/// This widget provides real-time search functionality.
 
 import 'package:flutter/material.dart';
-
-/// A search bar widget for recipe filtering.
-/// 
-/// [hintText] - Placeholder text shown when empty
-/// [onChanged] - Callback fired when text changes (real-time search)
-/// [onClear] - Callback when the clear button is pressed
 class SearchBarWidget extends StatefulWidget {
   final String hintText;
   final Function(String) onChanged;

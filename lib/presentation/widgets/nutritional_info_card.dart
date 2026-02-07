@@ -1,7 +1,3 @@
-/// Presentation Layer - Nutritional Info Card Widget
-/// 
-/// Displays nutritional information (calories, protein, carbs, fat, fiber)
-/// in a visually appealing card format.
 
 import 'package:flutter/material.dart';
 import '../../domain/entities/recipe.dart';
@@ -22,8 +18,6 @@ class NutritionalInfoCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    
-    // Calculate adjusted values
     final adjusted = nutritionalInfo.forServings(originalServings, currentServings);
 
     return Container(

@@ -1,4 +1,4 @@
-name: chicken_recipes_hot
+name: chicken_reciper
 description: Discover delicious chicken recipes with step-by-step cooking instructions, timers, and shopping lists.
 publish_to: 'none'
 version: 1.0.0+5

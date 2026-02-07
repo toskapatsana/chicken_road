@@ -1,6 +1,3 @@
-/// Presentation Layer - Shopping Provider
-/// 
-/// Manages shopping list state and persistence.
 
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
@@ -67,10 +64,7 @@ class ShoppingProvider extends ChangeNotifier {
     required String recipeName,
   }) async {
     for (final ingredient in ingredients) {
-      // Parse ingredient to extract quantity and name
       final parsed = _parseIngredient(ingredient);
-      
-      // Check if item already exists
       final exists = _items.any(
         (item) => item.name.toLowerCase() == parsed['name']!.toLowerCase(),
       );
@@ -93,7 +87,6 @@ class ShoppingProvider extends ChangeNotifier {
   }
   
   Map<String, String?> _parseIngredient(String ingredient) {
-    // Simple parsing: try to extract quantity from the beginning
     final regex = RegExp(r'^([\d\/\s]+(?:cup|cups|tbsp|tsp|lb|lbs|oz|g|kg|ml|l|can|cans|clove|cloves|inch|large|small|medium)?\s*)(.+)$', caseSensitive: false);
     final match = regex.firstMatch(ingredient.trim());
     

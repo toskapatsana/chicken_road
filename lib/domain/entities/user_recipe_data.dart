@@ -1,9 +1,3 @@
-/// Domain Layer - User Recipe Data Entity
-/// 
-/// Stores user-specific data for each recipe:
-/// - Personal rating
-/// - Notes
-/// - Cooking history
 
 class UserRecipeData {
   final String recipeId;
@@ -19,11 +13,7 @@ class UserRecipeData {
     this.cookingHistory = const [],
     this.selectedServings = 4,
   });
-
-  /// Number of times the user has cooked this recipe
   int get timesMade => cookingHistory.length;
-
-  /// Last time the recipe was cooked, null if never
   DateTime? get lastCooked => 
       cookingHistory.isEmpty ? null : cookingHistory.last;
 
@@ -42,8 +32,6 @@ class UserRecipeData {
       selectedServings: selectedServings ?? this.selectedServings,
     );
   }
-
-  /// Add a new cooking entry
   UserRecipeData addCookingEntry() {
     return copyWith(
       cookingHistory: [...cookingHistory, DateTime.now()],

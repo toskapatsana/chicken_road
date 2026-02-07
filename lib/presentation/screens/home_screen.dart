@@ -1,12 +1,3 @@
-/// Presentation Layer - Home Screen
-/// 
-/// The main screen of the app displaying:
-/// - Search bar for filtering recipes by name
-/// - Category chips for filtering by category
-/// - Grid of recipe cards
-/// 
-/// This screen uses Provider to access recipe data and
-/// responds to state changes from RecipeProvider.
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -15,8 +6,6 @@ import '../widgets/recipe_card.dart';
 import '../widgets/search_bar_widget.dart';
 import '../widgets/category_chips.dart';
 import 'recipe_detail_screen.dart';
-
-/// The home screen showing all recipes with search and filter functionality.
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -28,7 +17,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // Load recipes when screen initializes
     Future.microtask(() {
       context.read<RecipeProvider>().loadRecipes();
     });
@@ -43,13 +31,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Padding(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // App title
                   Row(
                     children: [
                       Icon(
@@ -77,8 +63,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            
-            // Search bar
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Consumer<RecipeProvider>(
@@ -95,8 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
             ),
-            
-            // Category chips
             Consumer<RecipeProvider>(
               builder: (context, provider, _) {
                 return CategoryChips(
@@ -109,8 +91,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             
             const SizedBox(height: 8),
-            
-            // Results count
             Consumer<RecipeProvider>(
               builder: (context, provider, _) {
                 return Padding(
@@ -126,8 +106,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
             
             const SizedBox(height: 8),
-            
-            // Recipe grid
             Expanded(
               child: Consumer<RecipeProvider>(
                 builder: (context, provider, _) {

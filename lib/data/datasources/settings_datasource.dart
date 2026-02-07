@@ -1,6 +1,3 @@
-/// Data Layer - Settings Data Source
-/// 
-/// Handles persistence of app settings using SharedPreferences.
 
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';

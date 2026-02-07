@@ -1,16 +1,3 @@
-/// Presentation Layer - Recipe Detail Screen
-/// 
-/// Displays detailed information about a single recipe:
-/// - Full-size recipe image
-/// - Title and description
-/// - Time, difficulty, and servings info
-/// - Servings calculator
-/// - Ingredients list (scaled by servings)
-/// - Step-by-step cooking instructions
-/// - Rating and notes
-/// - Add to shopping list
-/// - Share recipe
-/// - Cook mode button
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -25,10 +12,6 @@ import '../widgets/nutritional_info_card.dart';
 import '../widgets/rating_widget.dart';
 import '../widgets/cooking_timer_widget.dart';
 import 'cook_mode_screen.dart';
-
-/// Screen showing detailed recipe information.
-/// 
-/// [recipeId] - The ID of the recipe to display
 class RecipeDetailScreen extends StatefulWidget {
   final String recipeId;
 
@@ -111,7 +94,6 @@ Shared from Chicken Recipes Hot
         action: SnackBarAction(
           label: 'View',
           onPressed: () {
-            // Navigate to shopping list - user can switch tabs
           },
         ),
       ),
@@ -131,8 +113,6 @@ Shared from Chicken Recipes Hot
     if (originalServings == newServings) return ingredient;
     
     final multiplier = newServings / originalServings;
-    
-    // Simple number scaling regex
     final regex = RegExp(r'^([\d]+(?:\.[\d]+)?(?:\/[\d]+)?)\s*');
     final match = regex.firstMatch(ingredient);
     
@@ -141,7 +121,6 @@ Shared from Chicken Recipes Hot
       double? number;
       
       if (numberStr.contains('/')) {
-        // Handle fractions like 1/2
         final parts = numberStr.split('/');
         number = double.parse(parts[0]) / double.parse(parts[1]);
       } else {
@@ -183,7 +162,6 @@ Shared from Chicken Recipes Hot
         return Scaffold(
           body: CustomScrollView(
             slivers: [
-              // App bar with image
               SliverAppBar(
                 expandedHeight: 280,
                 pinned: true,
@@ -191,7 +169,6 @@ Shared from Chicken Recipes Hot
                   background: Stack(
                     fit: StackFit.expand,
                     children: [
-                      // Recipe image
                       Image.network(
                         recipe.imageUrl,
                         fit: BoxFit.cover,
@@ -208,7 +185,6 @@ Shared from Chicken Recipes Hot
                           );
                         },
                       ),
-                      // Gradient overlay
                       Container(
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
@@ -237,7 +213,6 @@ Shared from Chicken Recipes Hot
                   ),
                 ),
                 actions: [
-                  // Share button
                   Container(
                     margin: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
@@ -249,7 +224,6 @@ Shared from Chicken Recipes Hot
                       onPressed: () => _shareRecipe(recipe),
                     ),
                   ),
-                  // Favorite button
                   Container(
                     margin: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
@@ -268,15 +242,12 @@ Shared from Chicken Recipes Hot
                   ),
                 ],
               ),
-              
-              // Content
               SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Category and difficulty badges
                       Row(
                         children: [
                           Container(
@@ -303,8 +274,6 @@ Shared from Chicken Recipes Hot
                       ),
                       
                       const SizedBox(height: 12),
-                      
-                      // Title
                       Text(
                         recipe.title,
                         style: theme.textTheme.headlineSmall?.copyWith(
@@ -313,8 +282,6 @@ Shared from Chicken Recipes Hot
                       ),
                       
                       const SizedBox(height: 8),
-                      
-                      // Description
                       Text(
                         recipe.description,
                         style: theme.textTheme.bodyLarge?.copyWith(
@@ -323,8 +290,6 @@ Shared from Chicken Recipes Hot
                       ),
                       
                       const SizedBox(height: 16),
-                      
-                      // Time info row
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
@@ -364,8 +329,6 @@ Shared from Chicken Recipes Hot
                       ),
                       
                       const SizedBox(height: 16),
-                      
-                      // User rating and cooking history
                       if (userData != null && (userData.rating != null || userData.timesMade > 0))
                         Padding(
                           padding: const EdgeInsets.only(bottom: 16),
@@ -374,8 +337,6 @@ Shared from Chicken Recipes Hot
                             timesCooked: userData.timesMade,
                           ),
                         ),
-                      
-                      // Cook Mode button
                       FilledButton.icon(
                         onPressed: () => _openCookMode(context, recipe),
                         icon: const Icon(Icons.restaurant_menu),
@@ -386,8 +347,6 @@ Shared from Chicken Recipes Hot
                       ),
                       
                       const SizedBox(height: 12),
-                      
-                      // Timer toggle
                       OutlinedButton.icon(
                         onPressed: () {
                           setState(() => _showTimer = !_showTimer);
@@ -398,8 +357,6 @@ Shared from Chicken Recipes Hot
                           minimumSize: const Size(double.infinity, 48),
                         ),
                       ),
-                      
-                      // Timer widget
                       if (_showTimer) ...[
                         const SizedBox(height: 16),
                         CookingTimerWidget(
@@ -408,8 +365,6 @@ Shared from Chicken Recipes Hot
                       ],
                       
                       const SizedBox(height: 24),
-                      
-                      // Servings selector
                       ServingsSelector(
                         servings: _currentServings,
                         onChanged: (value) {
@@ -419,8 +374,6 @@ Shared from Chicken Recipes Hot
                       ),
                       
                       const SizedBox(height: 24),
-                      
-                      // Ingredients section
                       Row(
                         children: [
                           Expanded(
@@ -440,8 +393,6 @@ Shared from Chicken Recipes Hot
                       ),
                       
                       const SizedBox(height: 12),
-                      
-                      // Ingredients list
                       Container(
                         decoration: BoxDecoration(
                           color: colorScheme.surfaceContainerHighest.withOpacity(0.5),
@@ -487,8 +438,6 @@ Shared from Chicken Recipes Hot
                       ),
                       
                       const SizedBox(height: 24),
-                      
-                      // Nutritional Info
                       NutritionalInfoCard(
                         nutritionalInfo: recipe.nutritionalInfo,
                         originalServings: recipe.servings,
@@ -496,8 +445,6 @@ Shared from Chicken Recipes Hot
                       ),
                       
                       const SizedBox(height: 24),
-                      
-                      // Cooking steps section
                       _buildSectionHeader(
                         context,
                         icon: Icons.menu_book,
@@ -506,8 +453,6 @@ Shared from Chicken Recipes Hot
                       ),
                       
                       const SizedBox(height: 12),
-                      
-                      // Steps list
                       ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
@@ -556,8 +501,6 @@ Shared from Chicken Recipes Hot
                       ),
                       
                       const SizedBox(height: 24),
-                      
-                      // Rating section
                       _buildSectionHeader(
                         context,
                         icon: Icons.star,
@@ -577,8 +520,6 @@ Shared from Chicken Recipes Hot
                       ),
                       
                       const SizedBox(height: 24),
-                      
-                      // Notes section
                       Row(
                         children: [
                           Expanded(
@@ -647,8 +588,6 @@ Shared from Chicken Recipes Hot
               ),
             ],
           ),
-          
-          // Floating action button
           floatingActionButton: FloatingActionButton.extended(
             onPressed: () => recipeProvider.toggleFavorite(widget.recipeId),
             backgroundColor: recipe.isFavorite

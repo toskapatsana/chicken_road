@@ -1,6 +1,3 @@
-/// Presentation Layer - Onboarding Screen
-/// 
-/// Introduction screens shown to new users explaining app features.
 
 import 'package:flutter/material.dart';
 import 'package:introduction_screen/introduction_screen.dart';
@@ -20,7 +17,6 @@ class OnboardingScreen extends StatelessWidget {
 
     return IntroductionScreen(
       pages: [
-        // Welcome page
         PageViewModel(
           title: 'Welcome to Chicken Recipes Hot',
           body: 'Your ultimate chicken recipe companion with 50+ delicious recipes from around the world.',
@@ -30,8 +26,6 @@ class OnboardingScreen extends StatelessWidget {
           ),
           decoration: _getPageDecoration(theme),
         ),
-        
-        // Recipes page
         PageViewModel(
           title: 'Discover Recipes',
           body: 'Browse through soups, main dishes, snacks, and spicy recipes. Search and filter to find exactly what you want.',
@@ -41,8 +35,6 @@ class OnboardingScreen extends StatelessWidget {
           ),
           decoration: _getPageDecoration(theme),
         ),
-        
-        // Cook Mode page
         PageViewModel(
           title: 'Cook Mode',
           body: 'Step-by-step cooking instructions with large text and built-in timer. Your screen stays on while you cook!',
@@ -52,8 +44,6 @@ class OnboardingScreen extends StatelessWidget {
           ),
           decoration: _getPageDecoration(theme),
         ),
-        
-        // Shopping List page
         PageViewModel(
           title: 'Shopping List',
           body: 'Add ingredients from any recipe to your shopping list. Check off items as you shop.',
@@ -63,8 +53,6 @@ class OnboardingScreen extends StatelessWidget {
           ),
           decoration: _getPageDecoration(theme),
         ),
-        
-        // Track Progress page
         PageViewModel(
           title: 'Track Your Cooking',
           body: 'Rate recipes, add notes, and track which dishes you\'ve made. Build your personal cooking journal!',

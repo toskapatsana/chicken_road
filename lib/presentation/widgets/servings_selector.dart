@@ -1,7 +1,3 @@
-/// Presentation Layer - Servings Selector Widget
-/// 
-/// A widget that allows users to adjust the number of servings
-/// with +/- buttons and displays the current count.
 
 import 'package:flutter/material.dart';
 

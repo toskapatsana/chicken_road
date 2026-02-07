@@ -1,7 +1,3 @@
-/// Presentation Layer - Cook Mode Screen
-/// 
-/// A full-screen step-by-step cooking mode with large text,
-/// swipe navigation, and integrated timer.
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,14 +29,10 @@ class _CookModeScreenState extends State<CookModeScreen> {
   void initState() {
     super.initState();
     _pageController = PageController();
-    
-    // Enable wakelock based on settings
     final settings = context.read<SettingsProvider>().settings;
     if (settings.keepScreenOnInCookMode) {
       WakelockPlus.enable();
     }
-    
-    // Set immersive mode
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
   }
 
@@ -84,7 +76,6 @@ class _CookModeScreenState extends State<CookModeScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            // Header
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
               child: Row(
@@ -116,8 +107,6 @@ class _CookModeScreenState extends State<CookModeScreen> {
                 ],
               ),
             ),
-
-            // Timer panel
             if (_showTimer)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -125,8 +114,6 @@ class _CookModeScreenState extends State<CookModeScreen> {
                   initialMinutes: widget.recipe.cookTime,
                 ),
               ),
-
-            // Step indicator
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
               child: Row(
@@ -148,8 +135,6 @@ class _CookModeScreenState extends State<CookModeScreen> {
                 ],
               ),
             ),
-
-            // Step content
             Expanded(
               child: PageView.builder(
                 controller: _pageController,
@@ -168,13 +153,10 @@ class _CookModeScreenState extends State<CookModeScreen> {
                 },
               ),
             ),
-
-            // Navigation buttons
             Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
                 children: [
-                  // Previous button
                   Expanded(
                     child: OutlinedButton.icon(
                       onPressed: _currentStep > 0
@@ -188,7 +170,6 @@ class _CookModeScreenState extends State<CookModeScreen> {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  // Next button
                   Expanded(
                     child: FilledButton.icon(
                       onPressed: _currentStep < widget.recipe.steps.length - 1
@@ -236,7 +217,6 @@ class _StepPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Step number badge
           Container(
             width: 56,
             height: 56,
@@ -257,8 +237,6 @@ class _StepPage extends StatelessWidget {
           ),
           
           const SizedBox(height: 24),
-          
-          // Step text
           Text(
             step,
             style: TextStyle(
@@ -267,8 +245,6 @@ class _StepPage extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
           ),
-
-          // "I made this" button on last step
           if (isLastStep) ...[
             const SizedBox(height: 32),
             Center(

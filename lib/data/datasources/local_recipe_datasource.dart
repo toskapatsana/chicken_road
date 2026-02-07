@@ -1,38 +1,11 @@
-/// Data Layer - Local Recipe Data Source
-/// 
-/// Data sources are responsible for providing data from a specific source.
-/// This local data source provides mock recipe data for the application.
-/// 
-/// In a real application, you might have:
-/// - RemoteDataSource for API calls
-/// - LocalDataSource for cached/offline data
-/// - This mock data source for development/testing
-/// 
-/// Data sources work with Models, not Entities, as they deal with
-/// data serialization and external formats.
 
 import '../models/recipe_model.dart';
 import '../../domain/entities/recipe.dart';
-
-/// Local data source that provides mock recipe data.
-/// 
-/// This class contains 50 chicken recipes across 4 categories:
-/// - Soups
-/// - Main Dishes
-/// - Snacks
-/// - Spicy
 class LocalRecipeDataSource {
-  /// Returns all mock recipes.
-  /// 
-  /// In a real app, this might read from a local database or cache.
-  /// Here we return hardcoded mock data for demonstration.
   List<RecipeModel> getRecipes() {
     return _mockRecipes;
   }
-
-  /// The mock recipe data - 50 chicken recipes.
   static final List<RecipeModel> _mockRecipes = [
-    // ==================== SOUPS (12 recipes) ====================
     const RecipeModel(
       id: '1',
       title: 'Classic Chicken Noodle Soup',
@@ -441,8 +414,6 @@ class LocalRecipeDataSource {
         'Serve with radishes, cabbage, lime, and oregano.',
       ],
     ),
-
-    // ==================== MAIN DISHES (18 recipes) ====================
     const RecipeModel(
       id: '13',
       title: 'Classic Roast Chicken',
@@ -1055,8 +1026,6 @@ class LocalRecipeDataSource {
         'Serve with all the toppings.',
       ],
     ),
-
-    // ==================== SNACKS (10 recipes) ====================
     const RecipeModel(
       id: '31',
       title: 'Chicken Wings',
@@ -1397,8 +1366,6 @@ class LocalRecipeDataSource {
         'Top with green onions and sesame seeds.',
       ],
     ),
-
-    // ==================== SPICY (10 recipes) ====================
     const RecipeModel(
       id: '41',
       title: 'Nashville Hot Chicken',

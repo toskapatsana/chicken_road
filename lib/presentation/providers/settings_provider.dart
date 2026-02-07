@@ -1,6 +1,3 @@
-/// Presentation Layer - Settings Provider
-/// 
-/// Manages app settings state and persistence.
 
 import 'package:flutter/foundation.dart';
 import '../../domain/entities/app_settings.dart';

@@ -1,7 +1,3 @@
-/// Presentation Layer - Shopping List Screen
-/// 
-/// Displays the user's shopping list with the ability to check off items,
-/// clear completed items, and add new items manually.
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +29,6 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Header
             Padding(
               padding: const EdgeInsets.all(16),
               child: Column(
@@ -66,8 +61,6 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                 ],
               ),
             ),
-
-            // Item count and actions
             Consumer<ShoppingProvider>(
               builder: (context, provider, _) {
                 final unchecked = provider.uncheckedItems.length;
@@ -100,8 +93,6 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             ),
 
             const SizedBox(height: 8),
-
-            // Shopping list
             Expanded(
               child: Consumer<ShoppingProvider>(
                 builder: (context, provider, _) {
@@ -143,22 +134,17 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                       ),
                     );
                   }
-
-                  // Group items by recipe
                   final uncheckedItems = provider.uncheckedItems;
                   final checkedItems = provider.checkedItems;
 
                   return ListView(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     children: [
-                      // Unchecked items
                       ...uncheckedItems.map((item) => _ShoppingItemTile(
                         item: item,
                         onToggle: () => provider.toggleItemChecked(item.id),
                         onDelete: () => provider.removeItem(item.id),
                       )),
-
-                      // Checked items section
                       if (checkedItems.isNotEmpty) ...[
                         Padding(
                           padding: const EdgeInsets.only(top: 16, bottom: 8),

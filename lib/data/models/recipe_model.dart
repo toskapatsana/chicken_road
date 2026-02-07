@@ -1,21 +1,5 @@
-/// Data Layer - Recipe Model
-/// 
-/// Models in the data layer are responsible for data transformation.
-/// They handle serialization/deserialization and map between external
-/// data formats (JSON, API responses) and domain entities.
-/// 
-/// RecipeModel extends Recipe entity and adds data-layer specific
-/// functionality like JSON conversion. This keeps the domain layer
-/// pure and free from serialization concerns.
 
 import '../../domain/entities/recipe.dart';
-
-/// Data model for Recipe with serialization capabilities.
-/// 
-/// This model extends the domain Recipe entity and provides:
-/// - Conversion from JSON (for API responses or local storage)
-/// - Conversion to JSON (for persistence)
-/// - Mapping to/from domain entities
 class RecipeModel extends Recipe {
   const RecipeModel({
     required super.id,
@@ -32,12 +16,6 @@ class RecipeModel extends Recipe {
     super.difficulty,
     super.nutritionalInfo,
   });
-
-  /// Creates a RecipeModel from a JSON map.
-  /// 
-  /// This is typically used when:
-  /// - Loading data from local storage
-  /// - Parsing API responses
   factory RecipeModel.fromJson(Map<String, dynamic> json) {
     return RecipeModel(
       id: json['id'] as String,
@@ -75,12 +53,6 @@ class RecipeModel extends Recipe {
             ),
     );
   }
-
-  /// Converts the model to a JSON map.
-  /// 
-  /// This is used for:
-  /// - Saving data to local storage
-  /// - Sending data to an API
   Map<String, dynamic> toJson() {
     return {
       'id': id,
@@ -104,11 +76,6 @@ class RecipeModel extends Recipe {
       },
     };
   }
-
-  /// Creates a RecipeModel from a domain Recipe entity.
-  /// 
-  /// This is useful when you need to convert a domain entity
-  /// to a model for persistence operations.
   factory RecipeModel.fromEntity(Recipe recipe) {
     return RecipeModel(
       id: recipe.id,
@@ -126,11 +93,6 @@ class RecipeModel extends Recipe {
       nutritionalInfo: recipe.nutritionalInfo,
     );
   }
-
-  /// Converts the model to a domain Recipe entity.
-  /// 
-  /// Since RecipeModel extends Recipe, this is essentially
-  /// returning itself, but it makes the intent explicit.
   Recipe toEntity() {
     return Recipe(
       id: id,
@@ -148,8 +110,6 @@ class RecipeModel extends Recipe {
       nutritionalInfo: nutritionalInfo,
     );
   }
-
-  /// Creates a copy with updated fields.
   @override
   RecipeModel copyWith({
     String? id,

@@ -1,6 +1,3 @@
-/// Presentation Layer - User Data Provider
-/// 
-/// Manages user-specific recipe data (ratings, notes, cooking history).
 
 import 'package:flutter/foundation.dart';
 import '../../domain/entities/user_recipe_data.dart';

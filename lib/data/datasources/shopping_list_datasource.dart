@@ -1,6 +1,3 @@
-/// Data Layer - Shopping List Data Source
-/// 
-/// Handles persistence of shopping list items using SharedPreferences.
 
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';

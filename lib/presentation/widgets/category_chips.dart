@@ -1,15 +1,6 @@
-/// Presentation Layer - Category Chips Widget
-/// 
-/// A horizontal scrollable list of filter chips for recipe categories.
-/// Allows users to filter recipes by category (Soups, Main Dishes, Snacks, Spicy).
 
 import 'package:flutter/material.dart';
 import '../../domain/entities/recipe.dart';
-
-/// A widget displaying category filter chips.
-/// 
-/// [selectedCategory] - Currently selected category (null = all)
-/// [onCategorySelected] - Callback when a category chip is tapped
 class CategoryChips extends StatelessWidget {
   final RecipeCategory? selectedCategory;
   final Function(RecipeCategory?) onCategorySelected;
@@ -31,7 +22,6 @@ class CategoryChips extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 16),
         children: [
-          // "All" chip
           Padding(
             padding: const EdgeInsets.only(right: 8),
             child: FilterChip(
@@ -59,8 +49,6 @@ class CategoryChips extends StatelessWidget {
               ),
             ),
           ),
-          
-          // Category chips
           ...RecipeCategory.values.map((category) {
             final isSelected = selectedCategory == category;
             final categoryColor = _getCategoryColor(category);
@@ -113,8 +101,6 @@ class CategoryChips extends StatelessWidget {
       ),
     );
   }
-
-  /// Returns a color for each category.
   Color _getCategoryColor(RecipeCategory category) {
     switch (category) {
       case RecipeCategory.soups:
@@ -127,8 +113,6 @@ class CategoryChips extends StatelessWidget {
         return Colors.red;
     }
   }
-
-  /// Returns an icon for each category.
   IconData _getCategoryIcon(RecipeCategory category) {
     switch (category) {
       case RecipeCategory.soups:

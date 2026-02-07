@@ -1,6 +1,3 @@
-/// Presentation Layer - Rating Widget
-/// 
-/// A 5-star rating widget that allows users to rate recipes.
 
 import 'package:flutter/material.dart';
 

@@ -1,7 +1,3 @@
-/// Data Layer - User Data Data Source
-/// 
-/// Handles persistence of user-specific recipe data (ratings, notes, history)
-/// using SharedPreferences.
 
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -31,8 +27,6 @@ class UserDataDataSource {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = jsonEncode(data.toJson());
     await prefs.setString('$_userDataPrefix${data.recipeId}', jsonString);
-    
-    // Track all recipe IDs with user data
     final existingIds = prefs.getStringList(_allRecipeIdsKey) ?? [];
     if (!existingIds.contains(data.recipeId)) {
       existingIds.add(data.recipeId);

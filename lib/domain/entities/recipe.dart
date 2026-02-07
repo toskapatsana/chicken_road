@@ -1,14 +1,3 @@
-/// Domain Layer - Recipe Entity
-/// 
-/// This is the core business entity that represents a Recipe in our domain.
-/// Entities are the innermost layer in Clean Architecture and contain
-/// enterprise-wide business rules. They are independent of any external
-/// frameworks or dependencies.
-/// 
-/// The Recipe entity is immutable and contains only the essential properties
-/// that define what a recipe is in our business domain.
-
-/// Enum representing recipe categories
 enum RecipeCategory {
   soups('Soups'),
   mainDishes('Main Dishes'),
@@ -18,8 +7,6 @@ enum RecipeCategory {
   final String displayName;
   const RecipeCategory(this.displayName);
 }
-
-/// Enum representing recipe difficulty levels
 enum RecipeDifficulty {
   easy('Easy', 1),
   medium('Medium', 2),
@@ -29,8 +16,6 @@ enum RecipeDifficulty {
   final int level;
   const RecipeDifficulty(this.displayName, this.level);
 }
-
-/// Nutritional information per serving
 class NutritionalInfo {
   final int calories;   // kcal
   final int protein;    // grams
@@ -45,8 +30,6 @@ class NutritionalInfo {
     required this.fat,
     this.fiber = 0,
   });
-
-  /// Calculate nutritional info for different number of servings
   NutritionalInfo forServings(int originalServings, int newServings) {
     final multiplier = newServings / originalServings;
     return NutritionalInfo(
@@ -74,12 +57,6 @@ class NutritionalInfo {
     );
   }
 }
-
-/// Recipe Entity - Core business object
-/// 
-/// This entity is used throughout the domain and presentation layers.
-/// It represents the pure business concept of a recipe without any
-/// data-layer concerns like JSON serialization.
 class Recipe {
   final String id;
   final String title;
@@ -89,8 +66,6 @@ class Recipe {
   final List<String> ingredients;
   final List<String> steps;
   final bool isFavorite;
-  
-  // New fields for enhanced functionality
   final int prepTime;           // preparation time in minutes
   final int cookTime;           // cooking time in minutes
   final int servings;           // base number of servings
@@ -118,13 +93,7 @@ class Recipe {
       fiber: 2,
     ),
   });
-
-  /// Total time (prep + cook) in minutes
   int get totalTime => prepTime + cookTime;
-
-  /// Creates a copy of the recipe with optional parameter overrides.
-  /// This is useful for updating the favorite status without mutating
-  /// the original entity.
   Recipe copyWith({
     String? id,
     String? title,

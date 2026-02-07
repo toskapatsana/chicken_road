@@ -1,23 +1,6 @@
-/// Presentation Layer - Recipe Card Widget
-/// 
-/// This widget displays a recipe in a card format.
-/// It's used in the recipe lists on the Home and Favorites screens.
-/// 
-/// The card shows:
-/// - Recipe image
-/// - Title
-/// - Short description
-/// - Category badge
-/// - Favorite button (heart icon)
 
 import 'package:flutter/material.dart';
 import '../../domain/entities/recipe.dart';
-
-/// A card widget that displays recipe information.
-/// 
-/// [recipe] - The recipe data to display
-/// [onTap] - Callback when the card is tapped (navigate to detail)
-/// [onFavoriteToggle] - Callback when the favorite button is pressed
 class RecipeCard extends StatelessWidget {
   final Recipe recipe;
   final VoidCallback onTap;
@@ -46,10 +29,8 @@ class RecipeCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Recipe Image with gradient overlay
             Stack(
               children: [
-                // Image
                 AspectRatio(
                   aspectRatio: 16 / 10,
                   child: Image.network(
@@ -83,8 +64,6 @@ class RecipeCard extends StatelessWidget {
                     },
                   ),
                 ),
-                
-                // Gradient overlay for better text visibility
                 Positioned(
                   bottom: 0,
                   left: 0,
@@ -103,8 +82,6 @@ class RecipeCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                
-                // Category badge
                 Positioned(
                   top: 8,
                   left: 8,
@@ -127,8 +104,6 @@ class RecipeCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                
-                // Favorite button
                 Positioned(
                   top: 8,
                   right: 8,
@@ -155,14 +130,11 @@ class RecipeCard extends StatelessWidget {
                 ),
               ],
             ),
-            
-            // Recipe info
             Padding(
               padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Title
                   Text(
                     recipe.title,
                     style: theme.textTheme.titleMedium?.copyWith(
@@ -172,8 +144,6 @@ class RecipeCard extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
-                  
-                  // Time and difficulty row
                   Row(
                     children: [
                       Icon(
@@ -212,8 +182,6 @@ class RecipeCard extends StatelessWidget {
       ),
     );
   }
-
-  /// Returns a color based on the recipe category.
   Color _getCategoryColor(RecipeCategory category) {
     switch (category) {
       case RecipeCategory.soups:
@@ -226,8 +194,6 @@ class RecipeCard extends StatelessWidget {
         return Colors.red;
     }
   }
-
-  /// Returns a color based on the recipe difficulty.
   Color _getDifficultyColor(RecipeDifficulty difficulty) {
     switch (difficulty) {
       case RecipeDifficulty.easy:

@@ -1,36 +1,14 @@
-/// Chicken Recipes Hot - A Chicken Recipe Mobile Application
-/// 
-/// This is the main entry point of the application.
-/// 
-/// Architecture: Clean Architecture
-/// - Domain Layer: Business entities and use cases (pure Dart)
-/// - Data Layer: Models, data sources, and repository implementations
-/// - Presentation Layer: UI (screens, widgets) and state management (Provider)
-/// 
-/// State Management: Provider with ChangeNotifier
-/// - RecipeProvider manages recipe-related state
-/// - SettingsProvider manages app settings
-/// - UserDataProvider manages user-specific recipe data
-/// - ShoppingProvider manages shopping list
-/// 
-/// Theme: Follows system theme (light/dark)
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-// Domain layer - use cases
 import 'domain/usecases/get_recipes.dart';
 import 'domain/usecases/search_recipes.dart';
 import 'domain/usecases/filter_by_category.dart';
 import 'domain/usecases/toggle_favorite.dart';
 import 'domain/usecases/get_favorites.dart';
-
-// Data layer - data sources and repository
 import 'data/datasources/local_recipe_datasource.dart';
 import 'data/datasources/local_storage_datasource.dart';
 import 'data/repositories/recipe_repository_impl.dart';
-
-// Presentation layer - providers and screens
 import 'presentation/providers/recipe_provider.dart';
 import 'presentation/providers/settings_provider.dart';
 import 'presentation/providers/user_data_provider.dart';
@@ -44,29 +22,17 @@ import 'presentation/screens/onboarding_screen.dart';
 void main() {
   runApp(const ChickenRecipesHotApp());
 }
-
-/// The root widget of the Chicken Recipes Hot application.
-/// 
-/// This widget sets up:
-/// 1. Dependency injection using Provider
-/// 2. App-wide theme configuration
-/// 3. Navigation structure
 class ChickenRecipesHotApp extends StatelessWidget {
   const ChickenRecipesHotApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Initialize data sources
     final localRecipeDataSource = LocalRecipeDataSource();
     final localStorageDataSource = LocalStorageDataSource();
-
-    // Initialize repository with data sources
     final recipeRepository = RecipeRepositoryImpl(
       recipeDataSource: localRecipeDataSource,
       storageDataSource: localStorageDataSource,
     );
-
-    // Initialize use cases with repository
     final getRecipes = GetRecipes(recipeRepository);
     final searchRecipes = SearchRecipes(recipeRepository);
     final filterByCategory = FilterByCategory(recipeRepository);
@@ -75,7 +41,6 @@ class ChickenRecipesHotApp extends StatelessWidget {
 
     return MultiProvider(
       providers: [
-        // Recipe provider
         ChangeNotifierProvider(
           create: (_) => RecipeProvider(
             getRecipes: getRecipes,
@@ -85,15 +50,12 @@ class ChickenRecipesHotApp extends StatelessWidget {
             getFavorites: getFavorites,
           ),
         ),
-        // Settings provider
         ChangeNotifierProvider(
           create: (_) => SettingsProvider()..loadSettings(),
         ),
-        // User data provider
         ChangeNotifierProvider(
           create: (_) => UserDataProvider()..loadAllUserData(),
         ),
-        // Shopping provider
         ChangeNotifierProvider(
           create: (_) => ShoppingProvider()..loadShoppingList(),
         ),
@@ -101,11 +63,7 @@ class ChickenRecipesHotApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Chicken Recipes Hot',
         debugShowCheckedModeBanner: false,
-        
-        // Theme configuration
         themeMode: ThemeMode.system,
-        
-        // Light theme
         theme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
@@ -129,8 +87,6 @@ class ChickenRecipesHotApp extends StatelessWidget {
             ),
           ),
         ),
-        
-        // Dark theme
         darkTheme: ThemeData(
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(
@@ -160,8 +116,6 @@ class ChickenRecipesHotApp extends StatelessWidget {
     );
   }
 }
-
-/// Entry point that checks if onboarding should be shown.
 class AppEntryPoint extends StatelessWidget {
   const AppEntryPoint({super.key});
 
@@ -190,14 +144,6 @@ class AppEntryPoint extends StatelessWidget {
     );
   }
 }
-
-/// Main navigation widget with BottomNavigationBar.
-/// 
-/// Contains four tabs:
-/// - Recipes (Home screen)
-/// - Favorites
-/// - Shopping List
-/// - Settings
 class MainNavigation extends StatefulWidget {
   const MainNavigation({super.key});
 
@@ -228,7 +174,6 @@ class _MainNavigationState extends State<MainNavigation> {
           setState(() {
             _currentIndex = index;
           });
-          // Reload data when navigating to specific tabs
           if (index == 1) {
             context.read<RecipeProvider>().loadFavorites();
           } else if (index == 2) {

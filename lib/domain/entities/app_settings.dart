@@ -1,6 +1,3 @@
-/// Domain Layer - App Settings Entity
-/// 
-/// User preferences and application settings.
 
 enum MeasurementUnit {
   metric('Metric (g, ml)'),
