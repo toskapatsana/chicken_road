@@ -137,8 +137,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const _SectionHeader(title: 'About'),
                 const ListTile(
                   leading: Icon(Icons.info_outline),
-                  title: Text('Chicken Recipes Hot'),
-                  subtitle: Text('Version 1.0.0 (Build 4)'),
+                  title: Text('Chicken Reciper'),
                 ),
 
                 const SizedBox(height: 32),

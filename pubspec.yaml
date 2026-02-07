@@ -1,7 +1,7 @@
 name: chicken_reciper
 description: Discover delicious chicken recipes with step-by-step cooking instructions, timers, and shopping lists.
 publish_to: 'none'
-version: 1.0.0+5
+version: 1.0.0+6
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
