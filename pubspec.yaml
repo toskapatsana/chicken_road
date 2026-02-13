@@ -1,7 +1,7 @@
 name: chicken_reciper
 description: Discover delicious chicken recipes with step-by-step cooking instructions, timers, and shopping lists.
 publish_to: 'none'
-version: 1.0.0+7
+version: 1.0.1+1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -13,14 +13,14 @@ dependencies:
   shared_preferences: ^2.2.2
   cupertino_icons: ^1.0.6
   
-  wakelock_plus: ^1.2.8          # Keep screen awake in cook mode
-  share_plus: ^10.0.3            # Native share functionality
-  audioplayers: ^6.1.0           # Timer sound effects
-  introduction_screen: ^3.1.14   # Onboarding screens
-  uuid: ^4.5.1                   # Generate unique IDs for shopping items
-  webview_flutter: ^4.13.1       # Content viewer
-  image_picker: ^1.1.2           # Profile photo (camera + gallery)
-  path_provider: ^2.1.4          # App documents directory for photo storage
+  wakelock_plus: ^1.2.8         
+  share_plus: ^10.0.3           
+  audioplayers: ^6.1.0           
+  introduction_screen: ^3.1.14   
+  uuid: ^4.5.1                   
+  webview_flutter: ^4.13.1      
+  image_picker: ^1.1.2           
+  path_provider: ^2.1.4         
 
 dev_dependencies:
   flutter_test:
