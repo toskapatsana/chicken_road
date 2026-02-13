@@ -5,11 +5,6 @@ import 'package:provider/provider.dart';
 import 'local_auth_provider.dart';
 import 'privacy_policy_webview_screen.dart';
 
-/// Local profile creation screen.
-///
-/// Accepts [onProfileCreated] callback, which the parent uses to navigate
-/// to the next screen (e.g. Onboarding or Home). This keeps the module
-/// decoupled from any specific routing solution.
 class LocalAuthScreen extends StatefulWidget {
   final VoidCallback onProfileCreated;
 
@@ -48,8 +43,8 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
     );
 
     if (!mounted) return;
-    final provider = context.read<LocalAuthProvider>();
 
+    final provider = context.read<LocalAuthProvider>();
     if (result == true) {
       provider.setPrivacyAccepted(true);
       ScaffoldMessenger.of(context).showSnackBar(
@@ -63,7 +58,6 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
         ),
       );
     } else {
-      // User closed without acknowledging
       provider.setPrivacyAccepted(false);
       provider.showPrivacyRequiredMessage();
     }
@@ -96,24 +90,43 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
               ListTile(
                 leading: const Icon(Icons.camera_alt_outlined),
                 title: const Text('Take Photo'),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(ctx);
-                  provider.pickPhoto(ImageSource.camera);
+                  final ok = await provider.pickPhoto(ImageSource.camera);
+                  if (!ok && mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          provider.photoError ??
+                              'Could not add photo. Please try again.',
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
               ListTile(
                 leading: const Icon(Icons.photo_library_outlined),
                 title: const Text('Choose from Gallery'),
-                onTap: () {
+                onTap: () async {
                   Navigator.pop(ctx);
-                  provider.pickPhoto(ImageSource.gallery);
+                  final ok = await provider.pickPhoto(ImageSource.gallery);
+                  if (!ok && mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          provider.photoError ??
+                              'Could not add photo. Please try again.',
+                        ),
+                      ),
+                    );
+                  }
                 },
               ),
               if (provider.photoPath != null)
                 ListTile(
                   leading: Icon(Icons.delete_outline, color: colorScheme.error),
-                  title: Text('Remove Photo',
-                      style: TextStyle(color: colorScheme.error)),
+                  title: Text('Remove Photo', style: TextStyle(color: colorScheme.error)),
                   onTap: () {
                     Navigator.pop(ctx);
                     provider.removePhoto();
@@ -213,9 +226,7 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
                                 onPressed: _showPhotoOptions,
                                 icon: const Icon(Icons.add_a_photo_outlined, size: 18),
                                 label: Text(
-                                  provider.photoPath != null
-                                      ? 'Change Photo'
-                                      : 'Add Photo (optional)',
+                                  provider.photoPath != null ? 'Change Photo' : 'Add Photo (optional)',
                                 ),
                               ),
                             ),
@@ -300,12 +311,8 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
           CircleAvatar(
             radius: 52,
             backgroundColor: colorScheme.primaryContainer,
-            backgroundImage: provider.photoPath != null
-                ? FileImage(File(provider.photoPath!))
-                : null,
-            child: provider.photoPath == null
-                ? Icon(Icons.person, size: 48, color: colorScheme.primary)
-                : null,
+            backgroundImage: provider.photoPath != null ? FileImage(File(provider.photoPath!)) : null,
+            child: provider.photoPath == null ? Icon(Icons.person, size: 48, color: colorScheme.primary) : null,
           ),
           Positioned(
             bottom: 0,
@@ -332,11 +339,7 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
     );
   }
 
-  Widget _buildPrivacyRow(
-    LocalAuthProvider provider,
-    ThemeData theme,
-    ColorScheme colorScheme,
-  ) {
+  Widget _buildPrivacyRow(LocalAuthProvider provider, ThemeData theme, ColorScheme colorScheme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

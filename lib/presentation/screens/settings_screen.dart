@@ -1,11 +1,14 @@
 
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/app_settings.dart';
 import '../providers/settings_provider.dart';
 import '../providers/user_data_provider.dart';
 import '../providers/shopping_provider.dart';
 import '../../features/local_auth/presentation/privacy_policy_webview_screen.dart';
+import '../../features/local_auth/presentation/local_auth_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -30,8 +33,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
     return Scaffold(
       body: SafeArea(
-        child: Consumer<SettingsProvider>(
-          builder: (context, provider, _) {
+        child: Consumer2<SettingsProvider, LocalAuthProvider>(
+          builder: (context, provider, authProvider, _) {
             final settings = provider.settings;
             
             return ListView(
@@ -68,6 +71,46 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ],
                   ),
                 ),
+                const Divider(),
+                _SectionHeader(title: 'Account'),
+                ListTile(
+                  leading: CircleAvatar(
+                    radius: 18,
+                    backgroundColor: colorScheme.primaryContainer,
+                    backgroundImage: authProvider.photoPath != null
+                        ? FileImage(File(authProvider.photoPath!))
+                        : null,
+                    child: authProvider.photoPath == null
+                        ? Icon(Icons.person, color: colorScheme.primary, size: 18)
+                        : null,
+                  ),
+                  title: Text(
+                    authProvider.displayName.trim().isEmpty
+                        ? 'Set Display Name'
+                        : authProvider.displayName,
+                  ),
+                  subtitle: const Text('Display name'),
+                  trailing: const Icon(Icons.edit_outlined),
+                  onTap: () => _showEditNameDialog(context, authProvider),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.add_a_photo_outlined),
+                  title: const Text('Profile Photo'),
+                  subtitle: Text(
+                    authProvider.photoPath == null
+                        ? 'No photo selected'
+                        : 'Photo selected',
+                  ),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => _showPhotoOptions(context, authProvider),
+                ),
+                ListTile(
+                  leading: Icon(Icons.person_remove_outlined, color: colorScheme.error),
+                  title: Text('Clear Profile', style: TextStyle(color: colorScheme.error)),
+                  subtitle: const Text('Remove local account name and photo'),
+                  onTap: () => _confirmClearProfile(context, authProvider),
+                ),
+
                 _SectionHeader(title: 'Preferences'),
                 ListTile(
                   leading: const Icon(Icons.straighten),
@@ -249,6 +292,137 @@ class _SettingsScreenState extends State<SettingsScreen> {
             );
           }).toList(),
         ),
+      ),
+    );
+  }
+
+  void _showEditNameDialog(BuildContext context, LocalAuthProvider authProvider) {
+    final controller = TextEditingController(text: authProvider.displayName);
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Display Name'),
+        content: TextField(
+          controller: controller,
+          textCapitalization: TextCapitalization.words,
+          autofocus: true,
+          decoration: const InputDecoration(
+            hintText: 'Enter display name',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final ok = await authProvider.updateDisplayName(controller.text);
+              if (context.mounted && ok) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Display name updated')),
+                );
+              }
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showPhotoOptions(BuildContext context, LocalAuthProvider authProvider) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt_outlined),
+                title: const Text('Take Photo'),
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  final ok = await authProvider.pickPhoto(ImageSource.camera);
+                  if (!ok && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          authProvider.photoError ??
+                              'Could not add photo. Please try again.',
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library_outlined),
+                title: const Text('Choose from Gallery'),
+                onTap: () async {
+                  Navigator.pop(ctx);
+                  final ok = await authProvider.pickPhoto(ImageSource.gallery);
+                  if (!ok && context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          authProvider.photoError ??
+                              'Could not add photo. Please try again.',
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+              if (authProvider.photoPath != null)
+                ListTile(
+                  leading: Icon(Icons.delete_outline, color: Theme.of(context).colorScheme.error),
+                  title: Text(
+                    'Remove Photo',
+                    style: TextStyle(color: Theme.of(context).colorScheme.error),
+                  ),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    authProvider.removePhoto();
+                  },
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _confirmClearProfile(BuildContext context, LocalAuthProvider authProvider) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Clear Profile?'),
+        content: const Text('This will remove your local profile name and photo.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              await authProvider.clearProfile();
+              if (context.mounted) {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Profile cleared')),
+                );
+              }
+            },
+            child: const Text('Clear'),
+          ),
+        ],
       ),
     );
   }

@@ -20,6 +20,7 @@ class LocalAuthProvider extends ChangeNotifier {
   bool _privacyAccepted = false;
   String? _nameError;
   String? _privacyError;
+  String? _photoError;
 
   // --- Getters ---
   LocalProfile? get profile => _profile;
@@ -29,6 +30,7 @@ class LocalAuthProvider extends ChangeNotifier {
   bool get privacyAccepted => _privacyAccepted;
   String? get nameError => _nameError;
   String? get privacyError => _privacyError;
+  String? get photoError => _photoError;
   bool get hasValidProfile => _profile != null && _profile!.isComplete;
 
   bool get canContinue =>
@@ -61,7 +63,7 @@ class LocalAuthProvider extends ChangeNotifier {
   }
 
   // --- Photo ---
-  Future<void> pickPhoto(ImageSource source) async {
+  Future<bool> pickPhoto(ImageSource source) async {
     try {
       final picker = ImagePicker();
       final picked = await picker.pickImage(
@@ -70,26 +72,34 @@ class LocalAuthProvider extends ChangeNotifier {
         maxHeight: 512,
         imageQuality: 85,
       );
-      if (picked == null) return;
+      if (picked == null) {
+        _photoError = null;
+        return false;
+      }
 
-      // Save to app documents for persistence
       final dir = await getApplicationDocumentsDirectory();
-      final pickedPath = picked.path;
-      final ext = pickedPath.contains('.')
-          ? pickedPath.substring(pickedPath.lastIndexOf('.'))
-          : '.jpg';
-      final dest = File('${dir.path}/profile_photo$ext');
-      await File(pickedPath).copy(dest.path);
+      final bytes = await picked.readAsBytes();
+      final dest = File(
+        '${dir.path}/profile_photo_${DateTime.now().millisecondsSinceEpoch}.jpg',
+      );
+      await dest.writeAsBytes(bytes, flush: true);
 
       _photoPath = dest.path;
+      _photoError = null;
+      await _persistCurrentProfile();
       notifyListeners();
+      return true;
     } catch (_) {
-      // Silently fail — photo is optional
+      _photoError = 'Could not add photo. Please try again.';
+      notifyListeners();
+      return false;
     }
   }
 
-  void removePhoto() {
+  Future<void> removePhoto() async {
     _photoPath = null;
+    _photoError = null;
+    await _persistCurrentProfile();
     notifyListeners();
   }
 
@@ -147,6 +157,21 @@ class LocalAuthProvider extends ChangeNotifier {
     return true;
   }
 
+  Future<bool> updateDisplayName(String value) async {
+    final trimmed = value.trim();
+    if (trimmed.isEmpty) {
+      _nameError = 'Please enter your display name.';
+      notifyListeners();
+      return false;
+    }
+
+    _displayName = trimmed;
+    _nameError = null;
+    await _persistCurrentProfile();
+    notifyListeners();
+    return true;
+  }
+
   Future<void> clearProfile() async {
     await _repo.clearProfile();
     _profile = null;
@@ -156,5 +181,24 @@ class LocalAuthProvider extends ChangeNotifier {
     _nameError = null;
     _privacyError = null;
     notifyListeners();
+  }
+
+  Future<void> _persistCurrentProfile() async {
+    if (_displayName.trim().isEmpty && _profile == null) return;
+    final base = _profile ??
+        LocalProfile(
+          displayName: _displayName.trim(),
+          photoPath: _photoPath,
+          privacyAccepted: _privacyAccepted,
+          createdAt: DateTime.now(),
+        );
+
+    final updated = base.copyWith(
+      displayName: _displayName.trim().isEmpty ? base.displayName : _displayName.trim(),
+      photoPath: _photoPath,
+      privacyAccepted: _privacyAccepted,
+    );
+    await _repo.saveProfile(updated);
+    _profile = updated;
   }
 }
