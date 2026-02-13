@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'local_auth_provider.dart';
 import 'privacy_policy_webview_screen.dart';
@@ -88,29 +87,11 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
                 ),
               ),
               ListTile(
-                leading: const Icon(Icons.camera_alt_outlined),
-                title: const Text('Take Photo'),
-                onTap: () async {
-                  Navigator.pop(ctx);
-                  final ok = await provider.pickPhoto(ImageSource.camera);
-                  if (!ok && mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          provider.photoError ??
-                              'Could not add photo. Please try again.',
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-              ListTile(
                 leading: const Icon(Icons.photo_library_outlined),
                 title: const Text('Choose from Gallery'),
                 onTap: () async {
                   Navigator.pop(ctx);
-                  final ok = await provider.pickPhoto(ImageSource.gallery);
+                  final ok = await provider.pickPhotoFromGallery();
                   if (!ok && mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
@@ -146,6 +127,30 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
     if (success && mounted) {
       widget.onProfileCreated();
     }
+  }
+
+  Future<void> _pickBirthDate(LocalAuthProvider provider) async {
+    final now = DateTime.now();
+    final initial = provider.birthDate ?? DateTime(now.year - 20, now.month, now.day);
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: initial,
+      firstDate: DateTime(1920),
+      lastDate: now,
+      helpText: 'Select Date of Birth',
+      confirmText: 'Save',
+    );
+    if (picked != null) {
+      await provider.setBirthDate(picked);
+    }
+  }
+
+  String _formatDate(DateTime? date) {
+    if (date == null) return 'Select date of birth';
+    final d = date.day.toString().padLeft(2, '0');
+    final m = date.month.toString().padLeft(2, '0');
+    final y = date.year.toString();
+    return '$d.$m.$y';
   }
 
   @override
@@ -260,6 +265,28 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
                                 errorText: provider.nameError,
                                 border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            InkWell(
+                              borderRadius: BorderRadius.circular(12),
+                              onTap: () => _pickBirthDate(provider),
+                              child: InputDecorator(
+                                decoration: InputDecoration(
+                                  labelText: 'Date of Birth',
+                                  prefixIcon: const Icon(Icons.cake_outlined),
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                                child: Text(
+                                  _formatDate(provider.birthDate),
+                                  style: theme.textTheme.bodyLarge?.copyWith(
+                                    color: provider.birthDate == null
+                                        ? colorScheme.onSurfaceVariant
+                                        : colorScheme.onSurface,
+                                  ),
                                 ),
                               ),
                             ),

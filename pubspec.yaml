@@ -13,7 +13,6 @@ dependencies:
   shared_preferences: ^2.2.2
   cupertino_icons: ^1.0.6
   
-  # New dependencies for App Store features
   wakelock_plus: ^1.2.8          # Keep screen awake in cook mode
   share_plus: ^10.0.3            # Native share functionality
   audioplayers: ^6.1.0           # Timer sound effects

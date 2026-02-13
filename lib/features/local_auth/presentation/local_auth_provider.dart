@@ -6,7 +6,6 @@ import '../domain/local_profile.dart';
 import '../domain/profile_repository.dart';
 import '../data/profile_repository_impl.dart';
 
-/// Manages local auth state: display name, photo, privacy acceptance.
 class LocalAuthProvider extends ChangeNotifier {
   final ProfileRepository _repo;
 
@@ -17,16 +16,18 @@ class LocalAuthProvider extends ChangeNotifier {
   bool _isLoading = true;
   String _displayName = '';
   String? _photoPath;
+  DateTime? _birthDate;
   bool _privacyAccepted = false;
   String? _nameError;
   String? _privacyError;
   String? _photoError;
 
-  // --- Getters ---
+  
   LocalProfile? get profile => _profile;
   bool get isLoading => _isLoading;
   String get displayName => _displayName;
   String? get photoPath => _photoPath;
+  DateTime? get birthDate => _birthDate;
   bool get privacyAccepted => _privacyAccepted;
   String? get nameError => _nameError;
   String? get privacyError => _privacyError;
@@ -36,7 +37,7 @@ class LocalAuthProvider extends ChangeNotifier {
   bool get canContinue =>
       _displayName.trim().isNotEmpty && _privacyAccepted;
 
-  // --- Init ---
+  
   Future<void> loadProfile() async {
     _isLoading = true;
     notifyListeners();
@@ -45,6 +46,7 @@ class LocalAuthProvider extends ChangeNotifier {
       if (_profile != null) {
         _displayName = _profile!.displayName;
         _photoPath = _profile!.photoPath;
+        _birthDate = _profile!.birthDate;
         _privacyAccepted = _profile!.privacyAccepted;
       }
     } catch (_) {
@@ -54,7 +56,7 @@ class LocalAuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // --- Display name ---
+  
   void setDisplayName(String value) {
     _displayName = value;
     _nameError =
@@ -62,12 +64,12 @@ class LocalAuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // --- Photo ---
-  Future<bool> pickPhoto(ImageSource source) async {
+  
+  Future<bool> pickPhotoFromGallery() async {
     try {
       final picker = ImagePicker();
       final picked = await picker.pickImage(
-        source: source,
+        source: ImageSource.gallery,
         maxWidth: 512,
         maxHeight: 512,
         imageQuality: 85,
@@ -96,6 +98,12 @@ class LocalAuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> setBirthDate(DateTime? value) async {
+    _birthDate = value;
+    await _persistCurrentProfile();
+    notifyListeners();
+  }
+
   Future<void> removePhoto() async {
     _photoPath = null;
     _photoError = null;
@@ -103,7 +111,7 @@ class LocalAuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  // --- Privacy ---
+  
   void setPrivacyAccepted(bool value) {
     _privacyAccepted = value;
     if (value) {
@@ -119,7 +127,7 @@ class LocalAuthProvider extends ChangeNotifier {
     }
   }
 
-  // --- Validate + Save ---
+  
   bool validate() {
     bool valid = true;
 
@@ -147,6 +155,7 @@ class LocalAuthProvider extends ChangeNotifier {
     final profile = LocalProfile(
       displayName: _displayName.trim(),
       photoPath: _photoPath,
+      birthDate: _birthDate,
       privacyAccepted: true,
       createdAt: DateTime.now(),
     );
@@ -177,6 +186,7 @@ class LocalAuthProvider extends ChangeNotifier {
     _profile = null;
     _displayName = '';
     _photoPath = null;
+    _birthDate = null;
     _privacyAccepted = false;
     _nameError = null;
     _privacyError = null;
@@ -189,6 +199,7 @@ class LocalAuthProvider extends ChangeNotifier {
         LocalProfile(
           displayName: _displayName.trim(),
           photoPath: _photoPath,
+          birthDate: _birthDate,
           privacyAccepted: _privacyAccepted,
           createdAt: DateTime.now(),
         );
@@ -196,6 +207,7 @@ class LocalAuthProvider extends ChangeNotifier {
     final updated = base.copyWith(
       displayName: _displayName.trim().isEmpty ? base.displayName : _displayName.trim(),
       photoPath: _photoPath,
+      birthDate: _birthDate,
       privacyAccepted: _privacyAccepted,
     );
     await _repo.saveProfile(updated);

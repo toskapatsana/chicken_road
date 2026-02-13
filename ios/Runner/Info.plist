@@ -29,36 +29,34 @@
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 
-	<!-- Supported orientations -->
+	
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<!-- Performance: disable minimum frame duration on ProMotion displays -->
+	
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 
-	<!-- Indirect input events support (stylus, game controllers, etc.) -->
+	
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 
-	<!-- Camera and photo library access for profile photo -->
-	<key>NSCameraUsageDescription</key>
-	<string>We need camera access to take your profile photo.</string>
+	
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>We need photo library access to choose your profile photo.</string>
 
-	<!-- App Transport Security: default HTTPS-only, no exceptions needed -->
+	
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<false/>
 	</dict>
 
-	<!-- ITSAppUsesNonExemptEncryption: app does not use custom encryption -->
-	<!-- Required for App Store submission to avoid export compliance questions -->
+	
+	
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 </dict>

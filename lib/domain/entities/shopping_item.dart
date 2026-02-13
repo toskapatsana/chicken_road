@@ -3,8 +3,8 @@ class ShoppingItem {
   final String id;
   final String name;
   final String? quantity;
-  final String? recipeId;      // Reference to recipe it came from
-  final String? recipeName;    // Recipe name for display
+  final String? recipeId;      
+  final String? recipeName;    
   final bool isChecked;
   final DateTime addedAt;
 

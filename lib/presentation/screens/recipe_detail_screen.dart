@@ -25,7 +25,7 @@ class RecipeDetailScreen extends StatefulWidget {
 }
 
 class _RecipeDetailScreenState extends State<RecipeDetailScreen> {
-  int _currentServings = 4; // Default value
+  int _currentServings = 4; 
   bool _showTimer = false;
   bool _showNotes = false;
   bool _isInitialized = false;
@@ -581,7 +581,7 @@ Shared from Chicken Recipes Hot
                         ),
                       ],
                       
-                      const SizedBox(height: 100), // Space for FAB
+                      const SizedBox(height: 100), 
                     ],
                   ),
                 ),

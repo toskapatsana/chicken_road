@@ -3,7 +3,6 @@ import '../config/local_auth_config.dart';
 import '../domain/local_profile.dart';
 import '../domain/profile_repository.dart';
 
-/// SharedPreferences-backed implementation of [ProfileRepository].
 class ProfileRepositoryImpl implements ProfileRepository {
   static const _key = LocalAuthConfig.profileStorageKey;
 

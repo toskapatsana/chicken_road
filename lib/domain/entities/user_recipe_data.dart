@@ -1,10 +1,10 @@
 
 class UserRecipeData {
   final String recipeId;
-  final int? rating;              // 1-5 stars, null if not rated
-  final String? notes;            // User's personal notes
-  final List<DateTime> cookingHistory;  // Dates when recipe was cooked
-  final int selectedServings;     // User's preferred serving size
+  final int? rating;              
+  final String? notes;            
+  final List<DateTime> cookingHistory;  
+  final int selectedServings;     
 
   const UserRecipeData({
     required this.recipeId,

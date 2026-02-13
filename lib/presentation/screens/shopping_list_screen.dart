@@ -162,7 +162,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
                         )),
                       ],
                       
-                      const SizedBox(height: 80), // Space for FAB
+                      const SizedBox(height: 80), 
                     ],
                   );
                 },
@@ -245,7 +245,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
 }
 
 class _ShoppingItemTile extends StatelessWidget {
-  final dynamic item; // ShoppingItem
+  final dynamic item; 
   final VoidCallback onToggle;
   final VoidCallback onDelete;
 

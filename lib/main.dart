@@ -122,8 +122,6 @@ class ChickenRecipesHotApp extends StatelessWidget {
   }
 }
 
-/// Splash screen that waits for profile + settings to load,
-/// then navigates to the correct screen.
 class AppEntryPoint extends StatefulWidget {
   const AppEntryPoint({super.key});
 
@@ -173,7 +171,7 @@ class _AppEntryPointState extends State<AppEntryPoint>
   }
 
   Future<void> _waitForData() async {
-    // Give providers a moment to load from SharedPreferences
+    
     await Future.delayed(const Duration(milliseconds: 500));
     _dataReady = true;
     _tryNavigate();
@@ -273,10 +271,6 @@ class _AppEntryPointState extends State<AppEntryPoint>
   }
 }
 
-/// Decides what screen to show based on profile and onboarding state:
-/// 1. No valid profile → LocalAuthScreen
-/// 2. Profile valid, onboarding not done → OnboardingScreen
-/// 3. All done → MainNavigation
 class _AppContent extends StatelessWidget {
   const _AppContent();
 
@@ -284,24 +278,24 @@ class _AppContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<LocalAuthProvider, SettingsProvider>(
       builder: (context, authProvider, settingsProvider, _) {
-        // Still loading
+        
         if (authProvider.isLoading || settingsProvider.isLoading) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
-        // No valid profile → show local auth
+        
         if (!authProvider.hasValidProfile) {
           return LocalAuthScreen(
             onProfileCreated: () {
-              // After profile is created, _AppContent rebuilds because
-              // LocalAuthProvider notifies listeners.
+              
+              
             },
           );
         }
 
-        // Profile valid but onboarding not done
+        
         if (!settingsProvider.settings.hasCompletedOnboarding) {
           return OnboardingScreen(
             onComplete: () {
@@ -310,7 +304,7 @@ class _AppContent extends StatelessWidget {
           );
         }
 
-        // All good → main app
+        
         return const MainNavigation();
       },
     );

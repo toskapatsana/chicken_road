@@ -17,11 +17,11 @@ enum RecipeDifficulty {
   const RecipeDifficulty(this.displayName, this.level);
 }
 class NutritionalInfo {
-  final int calories;   // kcal
-  final int protein;    // grams
-  final int carbs;      // grams
-  final int fat;        // grams
-  final int fiber;      // grams
+  final int calories;   
+  final int protein;    
+  final int carbs;      
+  final int fat;        
+  final int fiber;      
 
   const NutritionalInfo({
     required this.calories,
@@ -66,9 +66,9 @@ class Recipe {
   final List<String> ingredients;
   final List<String> steps;
   final bool isFavorite;
-  final int prepTime;           // preparation time in minutes
-  final int cookTime;           // cooking time in minutes
-  final int servings;           // base number of servings
+  final int prepTime;           
+  final int cookTime;           
+  final int servings;           
   final RecipeDifficulty difficulty;
   final NutritionalInfo nutritionalInfo;
 

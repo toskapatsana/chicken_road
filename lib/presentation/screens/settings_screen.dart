@@ -1,7 +1,6 @@
 
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import '../../domain/entities/app_settings.dart';
 import '../providers/settings_provider.dart';
@@ -345,29 +344,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                leading: const Icon(Icons.camera_alt_outlined),
-                title: const Text('Take Photo'),
-                onTap: () async {
-                  Navigator.pop(ctx);
-                  final ok = await authProvider.pickPhoto(ImageSource.camera);
-                  if (!ok && context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          authProvider.photoError ??
-                              'Could not add photo. Please try again.',
-                        ),
-                      ),
-                    );
-                  }
-                },
-              ),
-              ListTile(
                 leading: const Icon(Icons.photo_library_outlined),
                 title: const Text('Choose from Gallery'),
                 onTap: () async {
                   Navigator.pop(ctx);
-                  final ok = await authProvider.pickPhoto(ImageSource.gallery);
+                  final ok = await authProvider.pickPhotoFromGallery();
                   if (!ok && context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
