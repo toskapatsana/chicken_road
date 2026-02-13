@@ -67,7 +67,7 @@ class ChickenRecipesHotApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
-        title: 'Chicken Recipes Hot',
+        title: 'Chicken Hot Recipes',
         debugShowCheckedModeBanner: false,
         themeMode: ThemeMode.system,
         theme: ThemeData(

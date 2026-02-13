@@ -76,7 +76,7 @@ ${recipe.ingredients.map((i) => '• $i').join('\n')}
 INSTRUCTIONS:
 ${recipe.steps.asMap().entries.map((e) => '${e.key + 1}. ${e.value}').join('\n')}
 
-Shared from Chicken Recipes Hot
+Shared from Chicken Hot Recipes
 ''';
     Share.share(text, subject: recipe.title);
   }

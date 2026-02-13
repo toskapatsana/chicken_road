@@ -180,7 +180,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 const _SectionHeader(title: 'About'),
                 const ListTile(
                   leading: Icon(Icons.info_outline),
-                  title: Text('Chicken Reciper'),
+                  title: Text('Chicken Hot Recipes'),
                 ),
 
                 ListTile(

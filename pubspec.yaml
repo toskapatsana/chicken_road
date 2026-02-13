@@ -19,7 +19,6 @@ dependencies:
   introduction_screen: ^3.1.14   # Onboarding screens
   uuid: ^4.5.1                   # Generate unique IDs for shopping items
   webview_flutter: ^4.13.1       # Content viewer
-  http: ^1.2.1                   # Network requests
   image_picker: ^1.1.2           # Profile photo (camera + gallery)
   path_provider: ^2.1.4          # App documents directory for photo storage
 

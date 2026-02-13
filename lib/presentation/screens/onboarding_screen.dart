@@ -18,7 +18,7 @@ class OnboardingScreen extends StatelessWidget {
     return IntroductionScreen(
       pages: [
         PageViewModel(
-          title: 'Welcome to Chicken Recipes Hot',
+          title: 'Welcome to Chicken Hot Recipes',
           body: 'Your ultimate chicken recipe companion with 50+ delicious recipes from around the world.',
           image: _buildImage(
             Icons.restaurant_menu,
