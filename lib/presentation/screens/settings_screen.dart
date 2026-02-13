@@ -5,6 +5,7 @@ import '../../domain/entities/app_settings.dart';
 import '../providers/settings_provider.dart';
 import '../providers/user_data_provider.dart';
 import '../providers/shopping_provider.dart';
+import '../../features/local_auth/presentation/privacy_policy_webview_screen.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -140,6 +141,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   title: Text('Chicken Reciper'),
                 ),
 
+                ListTile(
+                  leading: const Icon(Icons.privacy_tip_outlined),
+                  title: const Text('Privacy Policy'),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () => _openLegalInfo(context),
+                ),
+
                 const SizedBox(height: 32),
               ],
             );
@@ -270,6 +278,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
             child: const Text('Clear'),
           ),
         ],
+      ),
+    );
+  }
+
+  void _openLegalInfo(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => const PrivacyPolicyWebViewScreen(),
       ),
     );
   }

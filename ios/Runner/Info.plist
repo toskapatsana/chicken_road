@@ -44,6 +44,12 @@
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 
+	<!-- Camera and photo library access for profile photo -->
+	<key>NSCameraUsageDescription</key>
+	<string>We need camera access to take your profile photo.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>We need photo library access to choose your profile photo.</string>
+
 	<!-- App Transport Security: default HTTPS-only, no exceptions needed -->
 	<key>NSAppTransportSecurity</key>
 	<dict>
