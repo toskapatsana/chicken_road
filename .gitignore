@@ -132,3 +132,23 @@ tmp/
 temp/
 **/tmp/
 **/temp/
+
+# FVM Version Cache
+.fvm/
+
+####################################
+# Signing / Secrets
+####################################
+*.jks
+*.keystore
+*.p12
+.env
+.env.*
+key.properties
+upload-keystore.jks
+google-services.json
+
+####################################
+# macOS
+####################################
+.DS_Store

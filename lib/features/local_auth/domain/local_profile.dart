@@ -16,7 +16,7 @@ class LocalProfile {
   });
 
   
-  bool get isComplete => displayName.trim().isNotEmpty && privacyAccepted;
+  bool get isComplete => displayName.trim().isNotEmpty;
 
   LocalProfile copyWith({
     String? displayName,

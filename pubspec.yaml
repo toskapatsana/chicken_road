@@ -18,9 +18,9 @@ dependencies:
   audioplayers: ^6.1.0           
   introduction_screen: ^3.1.14   
   uuid: ^4.5.1                   
-  webview_flutter: ^4.13.1      
-  image_picker: ^1.1.2           
-  path_provider: ^2.1.4         
+  image_picker: ^1.1.2
+  path_provider: ^2.1.4
+  url_launcher: ^6.2.5
 
 dev_dependencies:
   flutter_test:
