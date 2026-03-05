@@ -2,7 +2,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'local_auth_provider.dart';
-import 'privacy_policy_webview_screen.dart';
 
 class LocalAuthScreen extends StatefulWidget {
   final VoidCallback onProfileCreated;
@@ -32,34 +31,6 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
     _nameCtrl.dispose();
     _nameFocus.dispose();
     super.dispose();
-  }
-
-  Future<void> _openPrivacyPolicy() async {
-    final result = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => const PrivacyPolicyWebViewScreen(),
-      ),
-    );
-
-    if (!mounted) return;
-
-    final provider = context.read<LocalAuthProvider>();
-    if (result == true) {
-      provider.setPrivacyAccepted(true);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('Privacy Policy accepted.'),
-          behavior: SnackBarBehavior.floating,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-          duration: const Duration(seconds: 2),
-        ),
-      );
-    } else {
-      provider.setPrivacyAccepted(false);
-      provider.showPrivacyRequiredMessage();
-    }
   }
 
   void _showPhotoOptions() {
@@ -294,14 +265,6 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
-                    Card(
-                      margin: EdgeInsets.zero,
-                      child: Padding(
-                        padding: const EdgeInsets.all(16),
-                        child: _buildPrivacyRow(provider, theme, colorScheme),
-                      ),
-                    ),
                     const SizedBox(height: 18),
                     FilledButton(
                       onPressed: provider.canContinue ? _onContinue : null,
@@ -366,70 +329,4 @@ class _LocalAuthScreenState extends State<LocalAuthScreen> {
     );
   }
 
-  Widget _buildPrivacyRow(LocalAuthProvider provider, ThemeData theme, ColorScheme colorScheme) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        InkWell(
-          onTap: _openPrivacyPolicy,
-          borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 4),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                SizedBox(
-                  width: 24,
-                  height: 24,
-                  child: Checkbox(
-                    value: provider.privacyAccepted,
-                    onChanged: (_) => _openPrivacyPolicy(),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'I have read and accept the Privacy Policy.',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: colorScheme.onSurface,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      GestureDetector(
-                        onTap: _openPrivacyPolicy,
-                        child: Text(
-                          'Open Privacy Policy',
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            color: colorScheme.primary,
-                            fontWeight: FontWeight.w700,
-                            decoration: TextDecoration.underline,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        if (provider.privacyError != null)
-          Padding(
-            padding: const EdgeInsets.only(left: 36, top: 6),
-            child: Text(
-              provider.privacyError!,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.error,
-              ),
-            ),
-          ),
-      ],
-    );
-  }
 }

@@ -1,12 +1,12 @@
-
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../domain/entities/app_settings.dart';
+import '../../features/local_auth/config/local_auth_config.dart';
 import '../providers/settings_provider.dart';
 import '../providers/user_data_provider.dart';
 import '../providers/shopping_provider.dart';
-import '../../features/local_auth/presentation/privacy_policy_webview_screen.dart';
 import '../../features/local_auth/presentation/local_auth_provider.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -187,7 +187,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   leading: const Icon(Icons.privacy_tip_outlined),
                   title: const Text('Privacy Policy'),
                   trailing: const Icon(Icons.chevron_right),
-                  onTap: () => _openLegalInfo(context),
+                  onTap: () => _openPrivacyPolicy(context),
                 ),
 
                 const SizedBox(height: 32),
@@ -437,12 +437,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
     );
   }
 
-  void _openLegalInfo(BuildContext context) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => const PrivacyPolicyWebViewScreen(),
-      ),
-    );
+  void _openPrivacyPolicy(BuildContext context) async {
+    final uri = Uri.parse(LocalAuthConfig.privacyPolicyUrl);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
   }
 
   void _confirmClearAllData(BuildContext context) {

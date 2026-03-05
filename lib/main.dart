@@ -278,24 +278,16 @@ class _AppContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer2<LocalAuthProvider, SettingsProvider>(
       builder: (context, authProvider, settingsProvider, _) {
-        
         if (authProvider.isLoading || settingsProvider.isLoading) {
           return const Scaffold(
             body: Center(child: CircularProgressIndicator()),
           );
         }
 
-        
         if (!authProvider.hasValidProfile) {
-          return LocalAuthScreen(
-            onProfileCreated: () {
-              
-              
-            },
-          );
+          return LocalAuthScreen(onProfileCreated: () {});
         }
 
-        
         if (!settingsProvider.settings.hasCompletedOnboarding) {
           return OnboardingScreen(
             onComplete: () {
@@ -304,7 +296,6 @@ class _AppContent extends StatelessWidget {
           );
         }
 
-        
         return const MainNavigation();
       },
     );

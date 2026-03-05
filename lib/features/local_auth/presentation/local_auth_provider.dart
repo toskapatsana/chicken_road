@@ -17,27 +17,20 @@ class LocalAuthProvider extends ChangeNotifier {
   String _displayName = '';
   String? _photoPath;
   DateTime? _birthDate;
-  bool _privacyAccepted = false;
   String? _nameError;
-  String? _privacyError;
   String? _photoError;
 
-  
   LocalProfile? get profile => _profile;
   bool get isLoading => _isLoading;
   String get displayName => _displayName;
   String? get photoPath => _photoPath;
   DateTime? get birthDate => _birthDate;
-  bool get privacyAccepted => _privacyAccepted;
   String? get nameError => _nameError;
-  String? get privacyError => _privacyError;
   String? get photoError => _photoError;
   bool get hasValidProfile => _profile != null && _profile!.isComplete;
 
-  bool get canContinue =>
-      _displayName.trim().isNotEmpty && _privacyAccepted;
+  bool get canContinue => _displayName.trim().isNotEmpty;
 
-  
   Future<void> loadProfile() async {
     _isLoading = true;
     notifyListeners();
@@ -47,7 +40,6 @@ class LocalAuthProvider extends ChangeNotifier {
         _displayName = _profile!.displayName;
         _photoPath = _profile!.photoPath;
         _birthDate = _profile!.birthDate;
-        _privacyAccepted = _profile!.privacyAccepted;
       }
     } catch (_) {
       _profile = null;
@@ -56,7 +48,6 @@ class LocalAuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  
   void setDisplayName(String value) {
     _displayName = value;
     _nameError =
@@ -64,7 +55,6 @@ class LocalAuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  
   Future<bool> pickPhotoFromGallery() async {
     try {
       final picker = ImagePicker();
@@ -111,23 +101,6 @@ class LocalAuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  
-  void setPrivacyAccepted(bool value) {
-    _privacyAccepted = value;
-    if (value) {
-      _privacyError = null;
-    }
-    notifyListeners();
-  }
-
-  void showPrivacyRequiredMessage() {
-    if (!_privacyAccepted) {
-      _privacyError = 'Please read and accept the Privacy Policy to continue.';
-      notifyListeners();
-    }
-  }
-
-  
   bool validate() {
     bool valid = true;
 
@@ -136,13 +109,6 @@ class LocalAuthProvider extends ChangeNotifier {
       valid = false;
     } else {
       _nameError = null;
-    }
-
-    if (!_privacyAccepted) {
-      _privacyError = 'Please read and accept the Privacy Policy to continue.';
-      valid = false;
-    } else {
-      _privacyError = null;
     }
 
     notifyListeners();
@@ -187,9 +153,7 @@ class LocalAuthProvider extends ChangeNotifier {
     _displayName = '';
     _photoPath = null;
     _birthDate = null;
-    _privacyAccepted = false;
     _nameError = null;
-    _privacyError = null;
     notifyListeners();
   }
 
@@ -200,7 +164,7 @@ class LocalAuthProvider extends ChangeNotifier {
           displayName: _displayName.trim(),
           photoPath: _photoPath,
           birthDate: _birthDate,
-          privacyAccepted: _privacyAccepted,
+          privacyAccepted: true,
           createdAt: DateTime.now(),
         );
 
@@ -208,7 +172,7 @@ class LocalAuthProvider extends ChangeNotifier {
       displayName: _displayName.trim().isEmpty ? base.displayName : _displayName.trim(),
       photoPath: _photoPath,
       birthDate: _birthDate,
-      privacyAccepted: _privacyAccepted,
+      privacyAccepted: true,
     );
     await _repo.saveProfile(updated);
     _profile = updated;

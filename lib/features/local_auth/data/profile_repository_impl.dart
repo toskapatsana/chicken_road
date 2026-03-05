@@ -20,13 +20,6 @@ class ProfileRepositoryImpl implements ProfileRepository {
   }
 
   @override
-  Future<void> setPrivacyAccepted(bool accepted) async {
-    final existing = await getProfile();
-    if (existing == null) return;
-    await saveProfile(existing.copyWith(privacyAccepted: accepted));
-  }
-
-  @override
   Future<void> clearProfile() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_key);
